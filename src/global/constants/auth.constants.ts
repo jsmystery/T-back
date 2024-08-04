@@ -1,0 +1,2 @@
+export const EXPIRE_DAY_REFRESH_TOKEN = 7
+export const EXPIRE_MINUTE_ACCESS_TOKEN = 30

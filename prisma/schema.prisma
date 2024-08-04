@@ -1,0 +1,238 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialActions", "filteredRelationCount"]
+  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ENUMS
+enum UserRole {
+  PROVIDER
+  ADMIN
+
+  @@map("user_role")
+}
+
+enum Visibility {
+  HIDDEN
+  VISIBLE
+
+  @@map("visibility")
+}
+
+enum AdvertisingType {
+  LARGE
+  BANNER
+  SMALL
+  CATALOG
+  CARD
+
+  @@map("advertising_type")
+}
+
+enum PromotionStatus {
+  TOP
+  HOT
+  VIP
+
+  @@map("promotion_status")
+}
+
+enum SeoPage {
+  HOME
+  MARKET
+
+  @@map("seo_page")
+}
+
+// GLOBAL MODELS
+model Seo {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  title       String
+  description String
+
+  page SeoPage? @unique
+
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId Int?      @unique @map("category_id")
+
+  @@map("seo")
+}
+
+// MODELS
+model Price {
+  id Int @id @default(autoincrement())
+
+  minQuantity Int @map("min_quantity")
+  price       Int
+
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int     @map("product_id")
+
+  @@map("price")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  authorName String @map("author_name")
+  comment    String
+  rating     Int
+
+  author    User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  Int     @map("author_id")
+  brand     Brand   @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  brandId   Int     @map("brand_id")
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int     @map("product_id")
+
+  @@map("review")
+}
+
+model Advertising {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  smallImagePath String? @map("small_image_path")
+  bigImagePath   String  @map("big_image_path")
+  resolution     Int?
+  url            String?
+  alt            String?
+  weekPrice      Int     @map("week_price")
+  monthPrice     Int     @map("month_price")
+
+  type AdvertisingType
+
+  visibility Visibility @default(HIDDEN)
+
+  @@map("advertising")
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name String @unique
+  slug String @unique
+
+  smallImagePath String @map("small_image_path")
+  bigImagePath   String @map("big_image_path")
+
+  seo      Seo?
+  products Product[]
+  brands   Brand[]
+
+  visibility Visibility @default(HIDDEN)
+
+  @@map("category")
+}
+
+model Promotion {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now()) @map("created_at")
+  expirationAt DateTime @map("expiration_at")
+
+  status PromotionStatus
+
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int     @map("product_id")
+
+  @@map("promotion")
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name        String
+  about       String
+  sku         String
+  posterPath  String   @map("poster_path")
+  videoPath   String?  @map("video_path")
+  imagesPaths String[] @map("images_paths")
+
+  rating Float @default(0.0)
+  views  Int   @default(0)
+
+  prices     Price[]
+  reviews    Review[]
+  promotions Promotion[]
+
+  brand    Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id])
+
+  categoryId Int? @map("category_id")
+  brandId    Int  @map("brand_id")
+
+  visibility Visibility @default(VISIBLE)
+
+  @@map("product")
+}
+
+model Profile {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  login    String @unique
+  email    String @unique
+  password String
+  phone    String @unique
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @unique @map("user_id")
+
+  @@map("profile")
+}
+
+model Brand {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name        String   @unique
+  slug        String   @unique
+  city        String
+  logoPath    String   @map("logo_path")
+  about       String
+  subscribers String[]
+
+  rating Float @default(0.0)
+
+  products Product[]
+  reviews  Review[]
+  category Category? @relation(fields: [categoryId], references: [id])
+
+  categoryId Int? @map("category_id")
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @unique @map("user_id")
+
+  @@map("brand")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  profile Profile?
+  brand   Brand?
+  reviews Review[]
+
+  role UserRole @default(PROVIDER)
+
+  @@map("user")
+}
