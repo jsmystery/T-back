@@ -7,7 +7,6 @@ import { AppResolver } from './app.resolver'
 import { AppService } from './app.service'
 import { getGraphQLConfig } from './config/graphql.config'
 import { GlobalModule } from './global.module'
-
 import { SERVER_STATIC } from './global/constants/global.constants'
 import { AdvertisingModule } from './resources/advertising/advertising.module'
 import { BrandModule } from './resources/brand/brand.module'
