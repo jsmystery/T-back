@@ -210,6 +210,17 @@ type NestedCategory {
   slug: String!
 }
 
+type NestedProductBrand {
+  id: Int!
+  isBrandOwner: Boolean!
+  isSubscribed: Boolean!
+  logoPath: String!
+  name: String!
+  phoneNumber: String!
+  rating: String!
+  slug: String!
+}
+
 type Price {
   minQuantity: Int!
   price: Int!
@@ -222,12 +233,21 @@ input PriceInput {
 
 type Product {
   about: String!
+  category: NestedCategory!
+  createdAt: String!
+  id: Int!
   imagesPaths: [String!]!
   name: String!
   posterPath: String!
   prices: [Price!]!
+  provider: NestedProductBrand!
+  rating: String!
+  reviews: [ReviewCard!]!
+  reviewsCount: Int!
   sku: String!
   videoPath: String
+  views: Int!
+  visibility: Visibility!
 }
 
 type ProductCard {
@@ -279,6 +299,7 @@ type Query {
   brands(query: BrandQueryInput!): AllBrands!
   categories(query: CategoryQueryInput!): AllCategories!
   categoryById(id: Int!): Category!
+  currentProduct(id: Int!): Product!
   jwtRegister(token: String!): SessionUserResponse!
   productById(id: Int!): Product!
   products(query: ProductQueryInput!): AllProducts!

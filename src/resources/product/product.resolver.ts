@@ -8,6 +8,7 @@ import { AllProducts, Product, ProductCard } from './entity/product.entity'
 import { ProductQueryInput } from './inputs/product-query.input'
 import { ProductInput } from './inputs/product.input'
 import { ProductService } from './product.service'
+import { User } from '../user/entities/full/user.entity'
 
 @Resolver()
 export class ProductResolver {
@@ -16,6 +17,11 @@ export class ProductResolver {
 	@Query(() => AllProducts, { name: 'products' })
 	async getAll(@Args('query') input: ProductQueryInput) {
 		return this.productService.getAll(input)
+	}
+
+	@Query(() => Product, { name: 'currentProduct' })
+	async getCurrentProduct(@Args('id', { type: () => Int }) id: number, @CurrentUser() user: User) {
+		return this.productService.currentProduct(id, user)
 	}
 
 	// Admin and Provider Place

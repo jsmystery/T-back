@@ -1,4 +1,4 @@
-import { brandNestedSelect } from 'src/resources/brand/selects/brand.select'
+import { productBrandNestedSelect } from 'src/resources/brand/selects/brand.select'
 import { categoryNestedSelect } from 'src/resources/category/selects/category.select'
 
 export const productCardSelect = {
@@ -29,7 +29,8 @@ export const productCardSelect = {
 	},
 }
 
-export const productFullSelect = {
+export const productSelect = {
+	id: true,
 	name: true,
 	about: true,
 	sku: true,
@@ -42,8 +43,11 @@ export const productFullSelect = {
 			minQuantity: true,
 		},
 	},
+	rating: true,
+	reviews: true,
+	views: true,
 	brand: {
-		select: brandNestedSelect,
+		select: productBrandNestedSelect,
 	},
 	category: {
 		select: {
@@ -51,5 +55,11 @@ export const productFullSelect = {
 			...categoryNestedSelect,
 		},
 	},
+	_count: {
+		select: {
+			reviews: true,
+		},
+	},
 	visibility: true,
+	createdAt: true,
 }

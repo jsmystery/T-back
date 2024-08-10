@@ -6,13 +6,16 @@ import {
 import { IS_PRODUCTION } from 'src/global/constants/global.constants'
 import { Visibility } from 'src/global/enums/query.enum'
 import { PrismaService } from 'src/prisma/prisma.service'
+import { dateFormat } from 'src/utils/formats/date-format.util'
 import { queryProductFilters } from 'src/utils/query/query-product-filters.util'
 import { HookService } from '../hook/hook.service'
 import { PaginationService } from '../pagination/pagination.service'
-import { ProductCard } from './entity/product.entity'
+import { User } from '../user/entities/full/user.entity'
+import { UserRole } from '../user/enums/user-role.enum'
+import { Product, ProductCard } from './entity/product.entity'
 import { ProductQueryInput } from './inputs/product-query.input'
 import { ProductInput } from './inputs/product.input'
-import { productCardSelect, productFullSelect } from './selects/product.select'
+import { productCardSelect, productSelect } from './selects/product.select'
 
 @Injectable()
 export class ProductService {
@@ -53,7 +56,7 @@ export class ProductService {
 				ratesCount: product._count.reviews,
 				category: product.category,
 				provider: product.brand,
-				visibility: product.visibility
+				visibility: product.visibility,
 			}
 		}) as ProductCard[]
 
@@ -69,12 +72,54 @@ export class ProductService {
 			where: {
 				id,
 			},
-			select: productFullSelect,
+			select: productSelect,
 		})
 
 		if (!product) throw new NotFoundException('Продукт не найден.')
 
 		return product
+	}
+
+	async currentProduct(id: number, user: User) {
+		const product = await this.prisma.product.findUnique({
+			where: {
+				id,
+			},
+			select: productSelect,
+		})
+
+		if (!product) throw new NotFoundException('Продукт не найден.')
+
+		return {
+			id: product.id,
+			name: product.name,
+			about: product.about,
+			sku: product.sku,
+			posterPath: product.posterPath,
+			videoPath: product.videoPath,
+			imagesPaths: product.imagesPaths,
+			prices: product.prices.map(({ price, minQuantity }) => ({
+				price,
+				minQuantity,
+			})),
+			rating: String(product.rating),
+			reviews: product.reviews.map((review) => ({
+				...review,
+				createdAt: dateFormat(review.createdAt, 'DD MMMM YYYY'),
+			})),
+			reviewsCount: product._count.reviews,
+			category: product.category,
+			provider: {
+				...product.brand,
+				rating: String(product.brand.rating),
+				isSubscribed: product.brand.subscribers.includes(user.profile.email),
+				isBrandOwner:
+					user.role === UserRole.PROVIDER && product.brand.userId === user.id,
+			},
+			views: product.views,
+			createdAt: dateFormat(product.createdAt, 'DD MMMM YYYY'),
+			visibility: product.visibility,
+		} as Product
 	}
 
 	async toggleVisibility(id: number) {
@@ -135,7 +180,7 @@ export class ProductService {
 						},
 					},
 				},
-				select: productCardSelect
+				select: productCardSelect,
 			})
 		} catch (error) {
 			if (!IS_PRODUCTION) {
@@ -186,7 +231,7 @@ export class ProductService {
 						},
 					},
 				},
-				select: productCardSelect
+				select: productCardSelect,
 			})
 		} catch (error) {
 			if (!IS_PRODUCTION) {
@@ -244,7 +289,7 @@ export class ProductService {
 						},
 					},
 				},
-				select: productCardSelect
+				select: productCardSelect,
 			})
 		} catch (error) {
 			if (!IS_PRODUCTION) {

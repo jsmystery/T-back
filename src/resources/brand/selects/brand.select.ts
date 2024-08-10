@@ -24,6 +24,14 @@ export const brandNestedSelect = {
 	logoPath: true,
 }
 
+export const productBrandNestedSelect = {
+	...brandNestedSelect,
+	rating: true,
+	phoneNumber: true,
+	subscribers: true,
+	userId: true,
+}
+
 export const brandCardSelect = {
 	id: true,
 	name: true,

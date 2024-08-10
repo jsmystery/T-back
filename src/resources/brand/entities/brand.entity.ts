@@ -1,12 +1,10 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Id } from 'src/global/entities/global.entity'
 import { NestedCategory } from 'src/resources/category/entities/category.entity'
 import { ReviewCard } from 'src/resources/review/entities/review.entity'
 
 @ObjectType()
-export class BrandCard {
-	@Field(() => Int)
-	id: number
-
+export class BrandCard extends Id {
 	@Field(() => String)
 	name: string
 
@@ -48,10 +46,25 @@ export class NestedBrand {
 }
 
 @ObjectType()
-export class Brand {
+export class NestedProductBrand extends NestedBrand {
 	@Field(() => Int)
 	id: number
 
+	@Field(() => String)
+	rating: string
+
+	@Field(() => String)
+	phoneNumber: string
+
+	@Field(() => Boolean)
+	isSubscribed: boolean
+
+	@Field(() => Boolean)
+	isBrandOwner: boolean
+}
+
+@ObjectType()
+export class Brand extends Id {
 	@Field(() => String)
 	name: string
 

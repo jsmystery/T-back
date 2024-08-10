@@ -96,7 +96,7 @@ export class BrandService {
 			about: brand.about,
 			reviews: brand.reviews.map((review) => ({
 				...review,
-				createdAt: dateFormat(brand.createdAt, 'DD MMMM YYYY'),
+				createdAt: dateFormat(review.createdAt, 'DD MMMM YYYY'),
 			})),
 			reviewsCount: brand._count.reviews,
 			createdAt: dateFormat(brand.createdAt, 'DD-MM-YYYY'),
