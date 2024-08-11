@@ -34,12 +34,12 @@ enum AdvertisingType {
   @@map("advertising_type")
 }
 
-enum PromotionStatus {
+enum TariffType {
   TOP
   HOT
   VIP
 
-  @@map("promotion_status")
+  @@map("tariff_type")
 }
 
 enum SeoPage {
@@ -67,6 +67,22 @@ model Seo {
 }
 
 // MODELS
+model Tariff {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  price Int
+  days  Int
+
+  type TariffType
+
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int     @map("product_id")
+
+  @@map("tariff")
+}
+
 model Price {
   id Int @id @default(autoincrement())
 
@@ -138,19 +154,6 @@ model Category {
   @@map("category")
 }
 
-model Promotion {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now()) @map("created_at")
-  expirationAt DateTime @map("expiration_at")
-
-  status PromotionStatus
-
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId Int     @map("product_id")
-
-  @@map("promotion")
-}
-
 model Product {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
@@ -166,9 +169,9 @@ model Product {
   rating Float @default(0.0)
   views  Int   @default(0)
 
-  prices     Price[]
-  reviews    Review[]
-  promotions Promotion[]
+  prices  Price[]
+  reviews Review[]
+  tariffs Tariff[]
 
   brand    Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
   category Category? @relation(fields: [categoryId], references: [id])
@@ -186,10 +189,12 @@ model Profile {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  login    String @unique
-  email    String @unique
+  login    String  @unique
+  email    String  @unique
   password String
-  phone    String @unique
+  whatsapp String?
+  telegram String?
+  phone    String
 
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int  @unique @map("user_id")
@@ -209,7 +214,8 @@ model Brand {
   about       String
   subscribers String[]
 
-  rating Float @default(0.0)
+  rating  Float @default(0.0)
+  balance Int   @default(0)
 
   products Product[]
   reviews  Review[]

@@ -47,3 +47,30 @@ export const brandCardSelect = {
 		select: categoryNestedSelect,
 	},
 }
+
+export const accountBrandSelect = {
+	id: true,
+	logoPath: true,
+	name: true,
+	city: true,
+	balance: true,
+	subscribers: true,
+	user: {
+		select: {
+			profile: {
+				select: {
+					email: true,
+					telegram: true,
+					phone: true,
+					whatsapp: true,
+				},
+			},
+		},
+	},
+	_count: {
+		select: {
+			products: true,
+		},
+	},
+	createdAt: true,
+}

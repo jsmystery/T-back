@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+	BadRequestException,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { dateFormat } from 'src/utils/formats/date-format.util'
 import { queryBrandFilters } from 'src/utils/query/query-brand-filters.util'
@@ -6,9 +10,13 @@ import { PaginationService } from '../pagination/pagination.service'
 import { reviewCardSelect } from '../review/selects/review.select'
 import { User } from '../user/entities/full/user.entity'
 import { UserRole } from '../user/enums/user-role.enum'
-import { Brand, BrandCard } from './entities/brand.entity'
+import { AccountBrand, Brand, BrandCard } from './entities/brand.entity'
 import { BrandQueryInput } from './input/brand-query.input'
-import { brandCardSelect, brandSelect } from './selects/brand.select'
+import {
+	accountBrandSelect,
+	brandCardSelect,
+	brandSelect,
+} from './selects/brand.select'
 
 @Injectable()
 export class BrandService {
@@ -101,5 +109,31 @@ export class BrandService {
 			reviewsCount: brand._count.reviews,
 			createdAt: dateFormat(brand.createdAt, 'DD-MM-YYYY'),
 		} as Brand
+	}
+
+	async byUserId(userId: number) {
+		const brand = await this.prisma.brand.findUnique({
+			where: {
+				userId,
+			},
+			select: accountBrandSelect,
+		})
+
+		if (!brand) throw new BadRequestException('Бренд не найден.')
+
+		return {
+			id: brand.id,
+			name: brand.name,
+			balance: brand.balance,
+			email: brand.user.profile.email,
+			phone: brand.user.profile.phone,
+			whatsapp: brand.user.profile.whatsapp,
+			telegram: brand.user.profile.telegram,
+			logoPath: brand.logoPath,
+			city: brand.city,
+			postedCount: brand._count.products,
+			subscribers: brand.subscribers,
+			createdAt: dateFormat(brand.createdAt, 'DD.MM.YYYY'),
+		} as AccountBrand
 	}
 }

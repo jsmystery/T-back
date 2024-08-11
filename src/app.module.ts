@@ -15,6 +15,7 @@ import { MailModule } from './resources/mail/mail.module'
 import { ProductModule } from './resources/product/product.module'
 import { UserModule } from './resources/user/user.module'
 import { ReviewModule } from './resources/review/review.module';
+import { TariffModule } from './resources/tariff/tariff.module';
 
 @Module({
 	imports: [
@@ -37,6 +38,7 @@ import { ReviewModule } from './resources/review/review.module';
 		AdvertisingModule,
 		BrandModule,
 		ReviewModule,
+		TariffModule,
 	],
 	providers: [AppResolver, AppService],
 })

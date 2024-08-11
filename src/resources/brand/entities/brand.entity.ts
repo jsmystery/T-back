@@ -101,3 +101,39 @@ export class Brand extends Id {
 	@Field(() => String)
 	createdAt: string
 }
+
+@ObjectType()
+export class AccountBrand extends Id {
+	@Field(() => String)
+	name: string
+
+	@Field(() => Int)
+	balance: number
+
+	@Field(() => String)
+	email: string
+
+	@Field(() => String)
+	phone: string
+
+	@Field(() => String, { nullable: true })
+	whatsapp?: string
+
+	@Field(() => String, { nullable: true })
+	telegram?: string
+
+	@Field(() => String)
+	logoPath: string
+
+	@Field(() => String)
+	city: string
+
+	@Field(() => Int)
+	postedCount: number
+
+	@Field(() => [String])
+	subscribers: string[]
+
+	@Field(() => String)
+	createdAt: string
+}

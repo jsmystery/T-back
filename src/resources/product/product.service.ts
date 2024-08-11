@@ -4,17 +4,19 @@ import {
 	NotFoundException,
 } from '@nestjs/common'
 import { IS_PRODUCTION } from 'src/global/constants/global.constants'
-import { Visibility } from 'src/global/enums/query.enum'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { dateFormat } from 'src/utils/formats/date-format.util'
 import { queryProductFilters } from 'src/utils/query/query-product-filters.util'
 import { HookService } from '../hook/hook.service'
 import { PaginationService } from '../pagination/pagination.service'
+import { NestedTariff } from '../tariff/entities/tariff.entity'
 import { User } from '../user/entities/full/user.entity'
 import { UserRole } from '../user/enums/user-role.enum'
+import { AnnouncementCard } from './entity/announcement.entity'
 import { Product, ProductCard } from './entity/product.entity'
 import { ProductQueryInput } from './inputs/product-query.input'
 import { ProductInput } from './inputs/product.input'
+import { announcementCardSelect } from './selects/announcement.selec'
 import { productCardSelect, productSelect } from './selects/product.select'
 
 @Injectable()
@@ -25,7 +27,7 @@ export class ProductService {
 		private readonly hookService: HookService
 	) {}
 
-	async getAll(input: ProductQueryInput) {
+	async getAllProducts(input: ProductQueryInput) {
 		const { createFilter, getSortFilter } = queryProductFilters()
 		const { perPage, skip } = this.paginationService.getPagination(input)
 		const filters = createFilter(input)
@@ -62,6 +64,59 @@ export class ProductService {
 
 		return {
 			products: products || [],
+			count: count || 0,
+		}
+	}
+
+	async getAllAnnouncements(input: ProductQueryInput) {
+		const { createFilter, getSortFilter } = queryProductFilters()
+		const { perPage, skip } = this.paginationService.getPagination(input)
+		const filters = createFilter(input)
+
+		const [queriedAnnouncements, count] = await Promise.all([
+			this.prisma.product.findMany({
+				where: filters,
+				orderBy: getSortFilter(input),
+				skip,
+				take: perPage,
+				select: announcementCardSelect,
+			}),
+			this.prisma.product.count({ where: filters }),
+		])
+
+		const announcements = queriedAnnouncements.map((product) => {
+			const prices = product.prices.map((item) => item.price)
+			const minPrice = Math.min(...prices)
+			const maxPrice = Math.max(...prices)
+
+			return {
+				id: product.id,
+				name: product.name,
+				posterPath: product.posterPath,
+				minPrice,
+				maxPrice,
+				city: product.brand.city,
+				sku: product.sku,
+				views: product.views,
+				createdAt: dateFormat(product.createdAt, 'DD MMMM YYYY'),
+				tariffs: product.tariffs.map((tariff) => {
+					const expirationDate = new Date(tariff.createdAt)
+					expirationDate.setDate(expirationDate.getDate() + tariff.days)
+					const now = new Date()
+					const timeDifference = expirationDate.getTime() - now.getTime()
+					const isLittleLeft = timeDifference < 24 * 60 * 60 * 1000
+
+					return {
+						expirationAt: dateFormat(expirationDate, 'DD.MM.YYYY'),
+						isLittleLeft,
+						type: tariff.type,
+					} as NestedTariff
+				}),
+			}
+		}) as AnnouncementCard[]
+
+		return {
+			announcements: announcements || [],
 			count: count || 0,
 		}
 	}
@@ -120,74 +175,6 @@ export class ProductService {
 			createdAt: dateFormat(product.createdAt, 'DD MMMM YYYY'),
 			visibility: product.visibility,
 		} as Product
-	}
-
-	async toggleVisibility(id: number) {
-		try {
-			const product = await this.byId(id)
-			const visibility =
-				product.visibility === Visibility.VISIBLE
-					? Visibility.HIDDEN
-					: Visibility.VISIBLE
-
-			await this.prisma.product.update({
-				where: {
-					id,
-				},
-				data: {
-					visibility,
-				},
-			})
-
-			return visibility
-		} catch (error) {
-			if (!IS_PRODUCTION) {
-				console.log(error)
-			}
-			throw new BadRequestException(
-				'Произошла ошибка при обновлении статуса видимости.'
-			)
-		}
-	}
-
-	async duplicate(id: number) {
-		try {
-			const product = await this.byId(id)
-			const name = await this.hookService.uniqueSlug(product.name, 'product')
-
-			return this.prisma.product.create({
-				data: {
-					name: name,
-					about: product.about,
-					sku: product.sku,
-					posterPath: product.posterPath,
-					videoPath: product.videoPath,
-					imagesPaths: product.imagesPaths,
-					prices: {
-						create: product.prices.map((price) => ({
-							price: price.price,
-							minQuantity: price.minQuantity,
-						})),
-					},
-					brand: {
-						connect: {
-							id: product.brand.id,
-						},
-					},
-					category: {
-						connect: {
-							id: product.category.id,
-						},
-					},
-				},
-				select: productCardSelect,
-			})
-		} catch (error) {
-			if (!IS_PRODUCTION) {
-				console.log(error)
-			}
-			throw new BadRequestException('Произошла ошибка при создании дубликата.')
-		}
 	}
 
 	async create(input: ProductInput, brandId: number) {

@@ -2,6 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AccountBrand {
+  balance: Int!
+  city: String!
+  createdAt: String!
+  email: String!
+  id: Int!
+  logoPath: String!
+  name: String!
+  phone: String!
+  postedCount: Int!
+  subscribers: [String!]!
+  telegram: String
+  whatsapp: String
+}
+
 type Advertising {
   alt: String
   bigImagePath: String!
@@ -42,6 +57,11 @@ type AllAdvertisements {
   count: Int!
 }
 
+type AllAnnouncements {
+  announcements: [AnnouncementCard!]!
+  count: Int!
+}
+
 type AllBrands {
   brands: [BrandCard!]!
   count: Int!
@@ -60,6 +80,19 @@ type AllProducts {
 type AllReviews {
   count: Int!
   reviews: [ReviewCard!]!
+}
+
+type AnnouncementCard {
+  city: String!
+  createdAt: String!
+  id: Int!
+  maxPrice: Int!
+  minPrice: Int!
+  name: String!
+  posterPath: String!
+  sku: String!
+  tariffs: [NestedTariff!]!
+  views: Int!
 }
 
 type Brand {
@@ -185,7 +218,6 @@ type Mutation {
   deleteProduct(id: Int!): Int!
   duplicateAdvertising(id: Int!): Boolean!
   duplicateCategory(id: Int!): Boolean!
-  duplicateProduct(id: Int!): ProductCard!
   jwtConfirmation(data: JwtAuthConfirmationInput!): Boolean!
   jwtLogin(data: JwtAuthLoginInput!): SessionUserResponse!
   jwtReset(data: JwtAuthResetInput!): Boolean!
@@ -193,7 +225,6 @@ type Mutation {
   logout: Boolean!
   toggleAdvertising(id: Int!): Boolean!
   toggleCategory(id: Int!): Boolean!
-  toggleProduct(id: Int!): Visibility!
   updateAdvertising(data: AdvertisingInput!, id: Int!): Boolean!
   updateCategory(data: CategoryInput!, id: Int!): Boolean!
   updateProduct(data: ProductInput!, id: Int!): ProductCard!
@@ -219,6 +250,12 @@ type NestedProductBrand {
   phoneNumber: String!
   rating: String!
   slug: String!
+}
+
+type NestedTariff {
+  expirationAt: String!
+  isLittleLeft: Boolean!
+  type: TariffType!
 }
 
 type Price {
@@ -292,9 +329,11 @@ type Profile {
 }
 
 type Query {
+  accountBrand: AccountBrand!
   advertisements(query: FullestQueryInput!): AllAdvertisements!
   advertisementsByTypes(types: [AdvertisingType!]!): [Advertising!]!
   advertisingById(id: Int!): CurrentAdvertising!
+  announcements(query: ProductQueryInput!): AllAnnouncements!
   brand(slug: String!): Brand!
   brands(query: BrandQueryInput!): AllBrands!
   categories(query: CategoryQueryInput!): AllCategories!
@@ -355,6 +394,12 @@ type SessionUserResponse {
 enum Sort {
   ASC
   DESC
+}
+
+enum TariffType {
+  HOT
+  TOP
+  VIP
 }
 
 """The `Upload` scalar type represents a file upload."""

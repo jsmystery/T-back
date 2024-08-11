@@ -1,10 +1,9 @@
 import { Args, Query, Resolver } from '@nestjs/graphql'
-import { BrandService } from './brand.service'
-import { AllBrands, Brand } from './entities/brand.entity'
-import { BrandQueryInput } from './input/brand-query.input'
 import { CurrentUser } from '../user/decorators/user.decorator'
-import { Profile } from '../user/entities/profile/profile.entity'
 import { User } from '../user/entities/full/user.entity'
+import { BrandService } from './brand.service'
+import { AccountBrand, AllBrands, Brand } from './entities/brand.entity'
+import { BrandQueryInput } from './input/brand-query.input'
 
 @Resolver()
 export class BrandResolver {
@@ -18,5 +17,10 @@ export class BrandResolver {
 	@Query(() => Brand, { name: 'brand' })
 	async getBySlug(@Args('slug') slug: string, @CurrentUser() user: User) {
 		return this.brandService.bySlug(slug, user)
+	}
+
+	@Query(() => AccountBrand, { name: 'accountBrand' })
+	async getAccountBrand(@CurrentUser() user: User) {
+		return this.brandService.byUserId(user.id)
 	}
 }
