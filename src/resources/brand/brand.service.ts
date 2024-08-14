@@ -95,6 +95,8 @@ export class BrandService {
 						profile: {
 							select: {
 								phone: true,
+								whatsapp: true,
+								telegram: true,
 							},
 						},
 					},
@@ -111,7 +113,9 @@ export class BrandService {
 			city: brand.city,
 			postedCount: brand._count.products,
 			rating: String(brand.rating),
-			phoneNumber: brand.user.profile.phone,
+			phone: brand.user.profile.phone,
+			whatsapp: brand.user.profile.whatsapp,
+			telegram: brand.user.profile.telegram,
 			isSubscribed: brand.subscribers.includes(user.profile.email),
 			isBrandOwner:
 				user.role === UserRole.PROVIDER && brand.user.id === user.id,

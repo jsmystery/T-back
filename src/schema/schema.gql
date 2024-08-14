@@ -111,11 +111,13 @@ type Brand {
   isSubscribed: Boolean!
   logoPath: String!
   name: String!
-  phoneNumber: String
+  phone: String
   postedCount: Int!
   rating: String!
   reviews: [ReviewCard!]!
   reviewsCount: Int!
+  telegram: String
+  whatsapp: String
 }
 
 type BrandCard {
@@ -275,9 +277,11 @@ type NestedProductBrand {
   isSubscribed: Boolean!
   logoPath: String!
   name: String!
-  phoneNumber: String
+  phone: String
   rating: String!
   slug: String!
+  telegram: String
+  whatsapp: String
 }
 
 type NestedTariff {

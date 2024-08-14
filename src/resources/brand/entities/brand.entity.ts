@@ -55,10 +55,25 @@ export class NestedProductBrand extends NestedBrand {
 	id: number
 
 	@Field(() => String)
+	name: string
+
+	@Field(() => String)
+	slug: string
+
+	@Field(() => String)
+	logoPath: string
+
+	@Field(() => String)
 	rating: string
 
 	@Field(() => String, { nullable: true })
-	phoneNumber?: string
+	phone?: string
+
+	@Field(() => String, { nullable: true })
+	whatsapp?: string
+
+	@Field(() => String, { nullable: true })
+	telegram?: string
 
 	@Field(() => Boolean)
 	isSubscribed: boolean
@@ -85,7 +100,13 @@ export class Brand extends Id {
 	rating: string
 
 	@Field(() => String, { nullable: true })
-	phoneNumber?: string
+	phone?: string
+
+	@Field(() => String, { nullable: true })
+	whatsapp?: string
+
+	@Field(() => String, { nullable: true })
+	telegram?: string
 
 	@Field(() => Boolean)
 	isSubscribed: boolean

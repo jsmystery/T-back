@@ -28,11 +28,24 @@ export const brandNestedSelect = {
 }
 
 export const productBrandNestedSelect = {
-	...brandNestedSelect,
+	id: true,
+	name: true,
+	slug: true,
+	logoPath: true,
 	rating: true,
-	phoneNumber: true,
 	subscribers: true,
 	userId: true,
+	user: {
+		select: {
+			profile: {
+				select: {
+					phone: true,
+					whatsapp: true,
+					telegram: true,
+				},
+			},
+		},
+	},
 }
 
 export const brandCardSelect = {

@@ -172,7 +172,13 @@ export class ProductService {
 			reviewsCount: product._count.reviews,
 			category: product.category,
 			provider: {
-				...product.brand,
+				id: product.brand.id,
+				name: product.brand.name,
+				slug: product.brand.slug,
+				logoPath: product.brand.logoPath,
+				phone: product.brand.user.profile.phone,
+				whatsapp: product.brand.user.profile.whatsapp,
+				telegram: product.brand.user.profile.telegram,
 				rating: String(product.brand.rating),
 				isSubscribed: product.brand.subscribers.includes(user.profile.email),
 				isBrandOwner:
