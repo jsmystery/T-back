@@ -1,7 +1,6 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["referentialActions", "filteredRelationCount"]
-  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
@@ -17,13 +16,6 @@ enum UserRole {
   @@map("user_role")
 }
 
-enum Visibility {
-  HIDDEN
-  VISIBLE
-
-  @@map("visibility")
-}
-
 enum AdvertisingType {
   LARGE
   BANNER
@@ -36,7 +28,7 @@ enum AdvertisingType {
 
 enum TariffType {
   TOP
-  HOT
+  FILL
   VIP
 
   @@map("tariff_type")
@@ -67,18 +59,32 @@ model Seo {
 }
 
 // MODELS
+model Order {
+  id           Int       @id @default(autoincrement())
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  expirationAt DateTime? @map("expiration_at")
+
+  tariff Tariff @relation(fields: [tariffId], references: [id], onDelete: Cascade)
+
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int     @map("product_id")
+  tariffId  Int     @map("tariff_id")
+
+  @@map("order")
+}
+
 model Tariff {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  price Int
-  days  Int
+  duration    Int?
+  description String?
+  price       Int
+  type        TariffType @unique
 
-  type TariffType
-
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId Int     @map("product_id")
+  orders Order[]
 
   @@map("tariff")
 }
@@ -129,8 +135,6 @@ model Advertising {
 
   type AdvertisingType
 
-  visibility Visibility @default(HIDDEN)
-
   @@map("advertising")
 }
 
@@ -148,8 +152,6 @@ model Category {
   seo      Seo?
   products Product[]
   brands   Brand[]
-
-  visibility Visibility @default(HIDDEN)
 
   @@map("category")
 }
@@ -171,15 +173,13 @@ model Product {
 
   prices  Price[]
   reviews Review[]
-  tariffs Tariff[]
+  orders  Order[]
 
   brand    Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
   category Category? @relation(fields: [categoryId], references: [id])
 
   categoryId Int? @map("category_id")
   brandId    Int  @map("brand_id")
-
-  visibility Visibility @default(VISIBLE)
 
   @@map("product")
 }
@@ -190,11 +190,11 @@ model Profile {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   login    String  @unique
-  email    String  @unique
+  email    String? @unique
   password String
   whatsapp String?
   telegram String?
-  phone    String
+  phone    String?
 
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int  @unique @map("user_id")

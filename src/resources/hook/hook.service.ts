@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { createWriteStream, ensureDir, unlink } from 'fs-extra'
 import type { FileUpload } from 'graphql-upload-ts'
+import { extname } from 'path'
 import { SERVER_STATIC } from 'src/global/constants/global.constants'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { generateSlug } from 'src/utils/helpers/generate-slug.util'
@@ -26,14 +27,21 @@ export class HookService {
 		}
 	}
 
-	async uploadFile(folderName: string, file: FileUpload, currentPath?: string) {
+	async uploadFile(
+		folderName: string,
+		fileName: string,
+		file: FileUpload,
+		currentPath?: string
+	) {
 		const { createReadStream, filename } = await file
+
+		const extension = extname(filename)
 
 		const folderPath = `${SERVER_STATIC.PATH}/${folderName}`
 
 		ensureDir(folderPath)
 
-		const filePath = `${folderName}/${filename}`
+		const filePath = `${folderName}/${fileName + extension}`
 
 		const fullPath = `/${SERVER_STATIC.NAME}/${filePath}`
 

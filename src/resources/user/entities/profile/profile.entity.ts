@@ -1,15 +1,15 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, ObjectType } from '@nestjs/graphql'
 
 @ObjectType()
 export class SessionProfile {
 	@Field(() => String)
 	login: string
 
-	@Field(() => String)
-	email: string
+	@Field(() => String, { nullable: true })
+	email?: string
 
-	@Field(() => String)
-	phone: string
+	@Field(() => String, { nullable: true })
+	phone?: string
 }
 
 @ObjectType()

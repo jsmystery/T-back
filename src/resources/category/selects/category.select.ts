@@ -5,6 +5,11 @@ export const categoryNestedSelect = {
 	slug: true,
 }
 
+export const categoryEditSelect = {
+	id: true,
+	name: true,
+}
+
 export const categoryCardSelect = {
 	name: true,
 	slug: true,
@@ -20,5 +25,4 @@ export const categoryFullSelect = {
 	seo: {
 		select: seoSelect,
 	},
-	visibility: true,
 }

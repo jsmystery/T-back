@@ -1,4 +1,3 @@
-import { Visibility } from '@prisma/client'
 import { Sort } from 'src/global/enums/query.enum'
 import { BrandQueryInput } from 'src/resources/brand/input/brand-query.input'
 
@@ -7,8 +6,6 @@ export const queryBrandFilters = () => {
 		const filters = []
 
 		if (input.searchTerm) filters.push(getSearchTermFilter(input.searchTerm))
-
-		if (input.visibility) filters.push(getVisibilityFilter(input.visibility))
 
 		return filters.length ? { AND: filters } : {}
 	}
@@ -38,12 +35,6 @@ export const queryBrandFilters = () => {
 			reviews: {
 				_count: reviewsCount === Sort.DESC ? 'desc' : 'asc',
 			},
-		}
-	}
-
-	const getVisibilityFilter = (visibility: Visibility) => {
-		return {
-			visibility,
 		}
 	}
 

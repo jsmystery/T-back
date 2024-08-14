@@ -21,7 +21,6 @@ export const productCardSelect = {
 		select: categoryNestedSelect,
 	},
 	rating: true,
-	visibility: true,
 	_count: {
 		select: {
 			reviews: true,
@@ -60,6 +59,5 @@ export const productSelect = {
 			reviews: true,
 		},
 	},
-	visibility: true,
 	createdAt: true,
 }

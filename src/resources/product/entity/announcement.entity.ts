@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { Id } from 'src/global/entities/global.entity'
-import { NestedTariff } from 'src/resources/tariff/entities/tariff.entity'
+import { NestedOrder } from 'src/resources/order/entities/order.entity'
 
 @ObjectType()
 export class AnnouncementCard extends Id {
@@ -25,8 +25,8 @@ export class AnnouncementCard extends Id {
 	@Field(() => Int)
 	views: number
 
-	@Field(() => [NestedTariff])
-	tariffs: NestedTariff[]
+	@Field(() => [NestedOrder])
+	orders: NestedOrder[]
 
 	@Field(() => String)
 	createdAt: string

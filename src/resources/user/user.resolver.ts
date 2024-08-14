@@ -1,7 +1,7 @@
 import { Query, Resolver } from '@nestjs/graphql'
 import { Auth } from '../auth/helpers/decorators/auth.decorator'
 import { CurrentUser } from './decorators/user.decorator'
-import { SessionUser } from './entities/session/user.entity'
+import { SessionUser } from './entities/session/session-user.entity'
 import { UserService } from './user.service'
 
 @Resolver()

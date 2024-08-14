@@ -16,6 +16,8 @@ import { ProductModule } from './resources/product/product.module'
 import { UserModule } from './resources/user/user.module'
 import { ReviewModule } from './resources/review/review.module';
 import { TariffModule } from './resources/tariff/tariff.module';
+import { YookassaModule } from './resources/yookassa/yookassa.module';
+import { OrderModule } from './resources/order/order.module';
 
 @Module({
 	imports: [
@@ -39,6 +41,8 @@ import { TariffModule } from './resources/tariff/tariff.module';
 		BrandModule,
 		ReviewModule,
 		TariffModule,
+		YookassaModule,
+		OrderModule,
 	],
 	providers: [AppResolver, AppService],
 })

@@ -1,5 +1,5 @@
 import type { Prisma } from '@prisma/client'
-import { Sort, Visibility } from 'src/global/enums/query.enum'
+import { Sort } from 'src/global/enums/query.enum'
 import { CategoryQueryInput } from 'src/resources/category/inputs/category-query.input'
 
 export const queryCategoryFilters = () => {
@@ -7,8 +7,6 @@ export const queryCategoryFilters = () => {
 		const filters = []
 
 		if (input.searchTerm) filters.push(getSearchTermFilter(input.searchTerm))
-
-		if (input.visibility) filters.push(getVisibilityFilter(input.visibility))
 
 		if (input.popular) filters.push(getPopularFilter())
 
@@ -28,12 +26,6 @@ export const queryCategoryFilters = () => {
 					},
 				},
 			},
-		}
-	}
-
-	const getVisibilityFilter = (visibility: Visibility) => {
-		return {
-			visibility,
 		}
 	}
 

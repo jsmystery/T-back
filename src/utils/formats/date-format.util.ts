@@ -1,7 +1,7 @@
 export const dateFormat = (createdAt: Date, format: string) => {
 	const date = new Date(createdAt)
 
-	const months = [
+	const monthsText = [
 		'января',
 		'февраля',
 		'марта',
@@ -18,8 +18,13 @@ export const dateFormat = (createdAt: Date, format: string) => {
 
 	const day = date.getDate().toString().padStart(2, '0')
 	const monthIndex = date.getMonth()
-	const month = months[monthIndex]
+	const monthNumber = (monthIndex + 1).toString().padStart(2, '0')
+	const monthText = monthsText[monthIndex]
 	const year = date.getFullYear().toString()
 
-	return format.replace('DD', day).replace('MMMM', month).replace('YYYY', year)
+	return format
+		.replace('DD', day)
+		.replace('MM', monthNumber)
+		.replace('MMMM', monthText)
+		.replace('YYYY', year)
 }

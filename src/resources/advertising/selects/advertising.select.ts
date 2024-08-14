@@ -6,7 +6,6 @@ export const advertisingCardSelect = {
 	url: true,
 	alt: true,
 	type: true,
-	visibility: true,
 }
 
 export const advertisingFullSelect = {

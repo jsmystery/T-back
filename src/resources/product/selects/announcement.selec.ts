@@ -1,4 +1,4 @@
-import { nestedTariffSelect } from 'src/resources/tariff/selects/tariff.select'
+import { nestedOrderSelect } from 'src/resources/order/selects/order.select'
 
 export const announcementCardSelect = {
 	id: true,
@@ -15,10 +15,9 @@ export const announcementCardSelect = {
 			city: true,
 		},
 	},
-	tariffs: {
-		select: nestedTariffSelect,
+	orders: {
+		select: nestedOrderSelect,
 	},
 	views: true,
 	createdAt: true,
-	visibility: true,
 }

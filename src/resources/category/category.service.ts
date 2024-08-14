@@ -4,7 +4,6 @@ import {
 	NotFoundException,
 } from '@nestjs/common'
 import { IS_PRODUCTION } from 'src/global/constants/global.constants'
-import { Visibility } from 'src/global/enums/query.enum'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { generateSlug } from 'src/utils/helpers/generate-slug.util'
 import { queryCategoryFilters } from 'src/utils/query/query-category-filters.util'
@@ -49,6 +48,15 @@ export class CategoryService {
 		}
 	}
 
+	async getSelectCategories() {
+		return this.prisma.category.findMany({
+			select: {
+				id: true,
+				name: true,
+			},
+		})
+	}
+
 	// Admin Place
 	async byId(id: number) {
 		const category = await this.prisma.category.findUnique({
@@ -61,65 +69,6 @@ export class CategoryService {
 		if (!category) throw new NotFoundException('Категория не найдена.')
 
 		return category
-	}
-
-	async toggleVisibility(id: number) {
-		try {
-			const category = await this.byId(id)
-
-			await this.prisma.category.update({
-				where: {
-					id,
-				},
-				data: {
-					visibility:
-						category.visibility === Visibility.VISIBLE
-							? Visibility.HIDDEN
-							: Visibility.VISIBLE,
-				},
-			})
-
-			return true
-		} catch (error) {
-			if (!IS_PRODUCTION) {
-				console.log(error)
-			}
-			throw new BadRequestException(
-				'Произошла ошибка при обновлении статуса видимости.'
-			)
-		}
-	}
-
-	async duplicate(id: number) {
-		try {
-			const category = await this.byId(id)
-			const name = await this.hookService.uniqueSlug(category.name, 'category')
-
-			await this.prisma.category.create({
-				data: {
-					name: name,
-					slug: generateSlug(name),
-					smallImagePath: category.smallImagePath,
-					bigImagePath: category.bigImagePath,
-					seo: category.seo
-						? {
-								create: {
-									title: category.seo.title,
-									description: category.seo.description,
-								},
-						  }
-						: undefined,
-					visibility: Visibility.VISIBLE,
-				},
-			})
-
-			return true
-		} catch (error) {
-			if (!IS_PRODUCTION) {
-				console.log(error)
-			}
-			throw new BadRequestException('Произошла ошибка при создании дубликата.')
-		}
 	}
 
 	async create() {
@@ -183,7 +132,6 @@ export class CategoryService {
 							  }
 							: undefined,
 					},
-					visibility: Visibility.VISIBLE,
 				},
 			})
 			return true
@@ -191,7 +139,9 @@ export class CategoryService {
 			if (!IS_PRODUCTION) {
 				console.log(error)
 			}
-			throw new BadRequestException('Произошла ошибка при обновлении категории.')
+			throw new BadRequestException(
+				'Произошла ошибка при обновлении категории.'
+			)
 		}
 	}
 

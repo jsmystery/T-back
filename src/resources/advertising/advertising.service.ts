@@ -4,7 +4,6 @@ import {
 	NotFoundException,
 } from '@nestjs/common'
 import { IS_PRODUCTION } from 'src/global/constants/global.constants'
-import { Visibility } from 'src/global/enums/query.enum'
 import { FullestQueryInput } from 'src/global/inputs/query.input'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { queryFullestFilters } from 'src/utils/query/query-fullest-filters.util'
@@ -64,7 +63,6 @@ export class AdvertisingService {
 			return this.prisma.advertising.findFirst({
 				where: {
 					type,
-					visibility: Visibility.VISIBLE,
 				},
 				skip: randomIndex,
 				select: advertisingCardSelect,
@@ -98,60 +96,6 @@ export class AdvertisingService {
 		return advertising
 	}
 
-	async toggleVisibility(id: number) {
-		try {
-			const advertising = await this.byId(id)
-
-			await this.prisma.advertising.update({
-				where: {
-					id,
-				},
-				data: {
-					visibility:
-						advertising.visibility === Visibility.VISIBLE
-							? Visibility.HIDDEN
-							: Visibility.VISIBLE,
-				},
-			})
-
-			return true
-		} catch (error) {
-			if (!IS_PRODUCTION) {
-				console.log(error)
-			}
-			throw new BadRequestException(
-				'Произошла ошибка при обновлении статуса видимости.'
-			)
-		}
-	}
-
-	async duplicate(id: number) {
-		try {
-			const advertising = await this.byId(id)
-
-			await this.prisma.advertising.create({
-				data: {
-					smallImagePath: advertising.smallImagePath,
-					bigImagePath: advertising.bigImagePath,
-					resolution: advertising.resolution,
-					url: advertising.url,
-					alt: advertising.alt,
-					weekPrice: advertising.weekPrice,
-					monthPrice: advertising.monthPrice,
-					type: advertising.type,
-					visibility: Visibility.VISIBLE,
-				},
-			})
-
-			return true
-		} catch (error) {
-			if (!IS_PRODUCTION) {
-				console.log(error)
-			}
-			throw new BadRequestException('Произошла ошибка при создании дубликата.')
-		}
-	}
-
 	async create() {
 		try {
 			return this.prisma.advertising.create({
@@ -182,11 +126,13 @@ export class AdvertisingService {
 			const [smallImagePath, bigImagePath] = await Promise.all([
 				this.hookService.uploadFile(
 					'advertisements',
+					'small-image',
 					smallImage,
 					advertising.smallImagePath
 				),
 				this.hookService.uploadFile(
 					'advertisements',
+					'big-image',
 					bigImage,
 					advertising.bigImagePath
 				),
@@ -205,7 +151,6 @@ export class AdvertisingService {
 					weekPrice: +inputData.weekPrice,
 					monthPrice: +inputData.monthPrice,
 					type: inputData.type.value,
-					visibility: Visibility.VISIBLE,
 				},
 			})
 

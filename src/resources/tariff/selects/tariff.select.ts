@@ -1,5 +1,10 @@
 export const nestedTariffSelect = {
-	days: true,
 	type: true,
-	createdAt: true,
+}
+
+export const tariffSelect = {
+	...nestedTariffSelect,
+	price: true,
+	description: true,
+	duration: true,
 }

@@ -1,7 +1,11 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { Id } from 'src/global/entities/global.entity'
-import { NestedCategory } from 'src/resources/category/entities/category.entity'
+import {
+	NestedCategory,
+	SelectCategory,
+} from 'src/resources/category/entities/category.entity'
 import { ReviewCard } from 'src/resources/review/entities/review.entity'
+import { Tariff } from 'src/resources/tariff/entities/tariff.entity'
 
 @ObjectType()
 export class BrandCard extends Id {
@@ -53,8 +57,8 @@ export class NestedProductBrand extends NestedBrand {
 	@Field(() => String)
 	rating: string
 
-	@Field(() => String)
-	phoneNumber: string
+	@Field(() => String, { nullable: true })
+	phoneNumber?: string
 
 	@Field(() => Boolean)
 	isSubscribed: boolean
@@ -80,8 +84,8 @@ export class Brand extends Id {
 	@Field(() => String)
 	rating: string
 
-	@Field(() => String)
-	phoneNumber: string
+	@Field(() => String, { nullable: true })
+	phoneNumber?: string
 
 	@Field(() => Boolean)
 	isSubscribed: boolean
@@ -107,14 +111,17 @@ export class AccountBrand extends Id {
 	@Field(() => String)
 	name: string
 
+	@Field(() => String)
+	about: string
+
 	@Field(() => Int)
 	balance: number
 
-	@Field(() => String)
-	email: string
+	@Field(() => String, { nullable: true })
+	email?: string
 
-	@Field(() => String)
-	phone: string
+	@Field(() => String, { nullable: true })
+	phone?: string
 
 	@Field(() => String, { nullable: true })
 	whatsapp?: string
@@ -134,6 +141,21 @@ export class AccountBrand extends Id {
 	@Field(() => [String])
 	subscribers: string[]
 
+	@Field(() => SelectCategory)
+	category: SelectCategory
+
 	@Field(() => String)
 	createdAt: string
+}
+
+@ObjectType()
+export class Account {
+	@Field(() => AccountBrand, { nullable: true })
+	brand?: AccountBrand
+
+	@Field(() => [Tariff])
+	tariffs: Tariff[]
+
+	@Field(() => [SelectCategory])
+	categories: SelectCategory[]
 }

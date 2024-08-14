@@ -2,7 +2,7 @@ import { registerEnumType } from '@nestjs/graphql'
 
 export enum TariffType {
 	TOP = 'TOP',
-	HOT = 'HOT',
+	FILL = 'FILL',
 	VIP = 'VIP',
 }
 

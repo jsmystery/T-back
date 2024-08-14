@@ -36,18 +36,6 @@ export class AdvertisingResolver {
 	}
 
 	@Auth(UserRole.ADMIN)
-	@Mutation(() => Boolean, { name: 'toggleAdvertising' })
-	async toggleVisibility(@Args('id', { type: () => Int }) id: number) {
-		return this.advertisingService.toggleVisibility(id)
-	}
-
-	@Auth(UserRole.ADMIN)
-	@Mutation(() => Boolean, { name: 'duplicateAdvertising' })
-	async duplicate(@Args('id', { type: () => Int }) id: number) {
-		return this.advertisingService.duplicate(id)
-	}
-
-	@Auth(UserRole.ADMIN)
 	@Mutation(() => Id, { name: 'createAdvertising' })
 	async create() {
 		return this.advertisingService.create()

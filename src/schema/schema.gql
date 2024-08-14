@@ -2,15 +2,23 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Account {
+  brand: AccountBrand
+  categories: [SelectCategory!]!
+  tariffs: [Tariff!]!
+}
+
 type AccountBrand {
+  about: String!
   balance: Int!
+  category: SelectCategory!
   city: String!
   createdAt: String!
-  email: String!
+  email: String
   id: Int!
   logoPath: String!
   name: String!
-  phone: String!
+  phone: String
   postedCount: Int!
   subscribers: [String!]!
   telegram: String
@@ -25,7 +33,6 @@ type Advertising {
   smallImagePath: String
   type: AdvertisingType!
   url: String
-  visibility: Visibility
 }
 
 input AdvertisingInput {
@@ -89,9 +96,9 @@ type AnnouncementCard {
   maxPrice: Int!
   minPrice: Int!
   name: String!
+  orders: [NestedOrder!]!
   posterPath: String!
   sku: String!
-  tariffs: [NestedTariff!]!
   views: Int!
 }
 
@@ -104,7 +111,7 @@ type Brand {
   isSubscribed: Boolean!
   logoPath: String!
   name: String!
-  phoneNumber: String!
+  phoneNumber: String
   postedCount: Int!
   rating: String!
   reviews: [ReviewCard!]!
@@ -121,6 +128,19 @@ type BrandCard {
   slug: String!
 }
 
+input BrandInput {
+  about: String!
+  category: SelectInput!
+  city: CreatableSelectInput!
+  email: String
+  logoFile: Upload
+  logoPath: String
+  name: String!
+  phone: String
+  telegram: String
+  whatsapp: String
+}
+
 input BrandQueryInput {
   page: Int
   perPage: Int
@@ -128,7 +148,6 @@ input BrandQueryInput {
   reviewsCount: Sort
   searchTerm: String
   sort: Sort!
-  visibility: Visibility!
 }
 
 type Category {
@@ -159,7 +178,11 @@ input CategoryQueryInput {
   popular: Boolean
   searchTerm: String
   sort: Sort!
-  visibility: Visibility!
+}
+
+input CreatableSelectInput {
+  name: String!
+  value: String!
 }
 
 type CurrentAdvertising {
@@ -171,7 +194,6 @@ type CurrentAdvertising {
   smallImagePath: String
   type: AdvertisingType!
   url: String
-  visibility: Visibility
   weekPrice: String!
 }
 
@@ -180,7 +202,6 @@ input FullestQueryInput {
   perPage: Int
   searchTerm: String
   sort: Sort!
-  visibility: Visibility!
 }
 
 type Id {
@@ -210,22 +231,23 @@ input JwtAuthVerificationInput {
 }
 
 type Mutation {
+  balanceTopUp(data: YookassaInput!): YookassaPayment!
+  buyTariff(data: OrderInput!): NestedOrder!
   createAdvertising: Id!
+  createBrand(data: BrandInput!): AccountBrand!
   createCategory: Boolean!
   createProduct(data: ProductInput!): ProductCard!
   deleteAdvertising(id: Int!): Boolean!
   deleteCategory(id: Int!): Boolean!
   deleteProduct(id: Int!): Int!
-  duplicateAdvertising(id: Int!): Boolean!
-  duplicateCategory(id: Int!): Boolean!
   jwtConfirmation(data: JwtAuthConfirmationInput!): Boolean!
   jwtLogin(data: JwtAuthLoginInput!): SessionUserResponse!
   jwtReset(data: JwtAuthResetInput!): Boolean!
   jwtVerification(data: JwtAuthVerificationInput!): Boolean!
   logout: Boolean!
-  toggleAdvertising(id: Int!): Boolean!
-  toggleCategory(id: Int!): Boolean!
+  telegramAuth(data: TelegramAuthInput!): SessionUserResponse!
   updateAdvertising(data: AdvertisingInput!, id: Int!): Boolean!
+  updateBrand(data: BrandInput!): AccountBrand!
   updateCategory(data: CategoryInput!, id: Int!): Boolean!
   updateProduct(data: ProductInput!, id: Int!): ProductCard!
 }
@@ -241,21 +263,30 @@ type NestedCategory {
   slug: String!
 }
 
+type NestedOrder {
+  expirationDate: String
+  isLittleLeft: Boolean
+  tariff: NestedTariff!
+}
+
 type NestedProductBrand {
   id: Int!
   isBrandOwner: Boolean!
   isSubscribed: Boolean!
   logoPath: String!
   name: String!
-  phoneNumber: String!
+  phoneNumber: String
   rating: String!
   slug: String!
 }
 
 type NestedTariff {
-  expirationAt: String!
-  isLittleLeft: Boolean!
   type: TariffType!
+}
+
+input OrderInput {
+  productId: Int!
+  tariffType: TariffType!
 }
 
 type Price {
@@ -284,7 +315,6 @@ type Product {
   sku: String!
   videoPath: String
   views: Int!
-  visibility: Visibility!
 }
 
 type ProductCard {
@@ -297,7 +327,6 @@ type ProductCard {
   provider: NestedBrand!
   ratesCount: Int!
   rating: Int!
-  visibility: Visibility!
 }
 
 input ProductInput {
@@ -318,18 +347,17 @@ input ProductQueryInput {
   searchTerm: String
   sort: Sort!
   views: Sort
-  visibility: Visibility!
 }
 
 type Profile {
-  email: String!
+  email: String
   login: String!
   password: String!
-  phone: String!
+  phone: String
 }
 
 type Query {
-  accountBrand: AccountBrand!
+  account: Account!
   advertisements(query: FullestQueryInput!): AllAdvertisements!
   advertisementsByTypes(types: [AdvertisingType!]!): [Advertising!]!
   advertisingById(id: Int!): CurrentAdvertising!
@@ -361,6 +389,11 @@ type ReviewCard {
   rating: Int!
 }
 
+type SelectCategory {
+  id: Int!
+  name: String!
+}
+
 input SelectInput {
   name: String!
   value: Int!
@@ -377,9 +410,9 @@ input SeoInput {
 }
 
 type SessionProfile {
-  email: String!
+  email: String
   login: String!
-  phone: String!
+  phone: String
 }
 
 type SessionUser {
@@ -396,10 +429,22 @@ enum Sort {
   DESC
 }
 
+type Tariff {
+  description: String
+  duration: Int
+  price: Int!
+  type: TariffType!
+}
+
 enum TariffType {
-  HOT
+  FILL
   TOP
   VIP
+}
+
+input TelegramAuthInput {
+  login: String!
+  password: String!
 }
 
 """The `Upload` scalar type represents a file upload."""
@@ -410,7 +455,11 @@ enum UserRole {
   PROVIDER
 }
 
-enum Visibility {
-  HIDDEN
-  VISIBLE
+input YookassaInput {
+  amount: String!
+  redirectUrl: String!
+}
+
+type YookassaPayment {
+  paymentUrl: String!
 }

@@ -23,18 +23,6 @@ export class CategoryResolver {
 	}
 
 	@Auth(UserRole.ADMIN)
-	@Mutation(() => Boolean, { name: 'toggleCategory' })
-	async toggleVisibility(@Args('id', { type: () => Int }) id: number) {
-		return this.categoryService.toggleVisibility(id)
-	}
-
-	@Auth(UserRole.ADMIN)
-	@Mutation(() => Boolean, { name: 'duplicateCategory' })
-	async duplicate(@Args('id', { type: () => Int }) id: number) {
-		return this.categoryService.duplicate(id)
-	}
-
-	@Auth(UserRole.ADMIN)
 	@Mutation(() => Boolean, { name: 'createCategory' })
 	async create() {
 		return this.categoryService.create()

@@ -32,7 +32,7 @@ export class JwtAuthService {
 		await this.checkUser(input)
 
 		const confirmationToken = await this.jwtService.signAsync(input, {
-			expiresIn: `5m`,
+			expiresIn: `6h`,
 		})
 
 		await this.mailService.sendEmail(
@@ -52,8 +52,17 @@ export class JwtAuthService {
 
 	async sendVerification(input: JwtAuthVerificationInput) {
 		try {
+			const user = await this.prisma.profile.findUnique({
+				where: {
+					email: input.email,
+				},
+			})
+
+			if (!user)
+				throw new BadRequestException('Пользователь с таким E-mail не найден.')
+
 			const verificationToken = await this.jwtService.signAsync(input, {
-				expiresIn: `5m`,
+				expiresIn: `6h`,
 			})
 
 			await this.mailService.sendEmail(
@@ -73,7 +82,12 @@ export class JwtAuthService {
 			if (!IS_PRODUCTION) {
 				console.log(error)
 			}
-			throw new BadRequestException('Произошла ошибка во время верификации.')
+
+			if (error.response.error === 'Bad Request') {
+				throw new BadRequestException(error.response.message)
+			} else {
+				throw new BadRequestException('Произошла ошибка во время верификации.')
+			}
 		}
 	}
 

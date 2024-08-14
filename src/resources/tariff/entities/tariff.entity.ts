@@ -1,26 +1,20 @@
-import { Field, ObjectType } from '@nestjs/graphql'
+import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { TariffType } from '../enums/tariff-type.enum'
 
 @ObjectType()
 export class NestedTariff {
-	@Field(() => String)
-	expirationAt: string
-
-	@Field(() => Boolean)
-	isLittleLeft: boolean
-
 	@Field(() => TariffType)
 	type: TariffType
 }
 
 @ObjectType()
-export class Tariff {
-	@Field(() => String)
-	days: string
+export class Tariff extends NestedTariff {
+	@Field(() => Int)
+	price: number
 
-	@Field(() => Boolean)
-	price: boolean
+	@Field(() => String, { nullable: true })
+	description: string
 
-	@Field(() => TariffType)
-	type: TariffType
+	@Field(() => Int, { nullable: true })
+	duration?: number
 }

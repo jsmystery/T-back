@@ -1,29 +1,30 @@
-const profileBaseSelect = {
+export const profileBaseSelect = {
 	email: true,
 	login: true,
 	phone: true,
 }
 
-const userBaseSelect = {
+export const userBaseSelect = {
 	id: true,
-	profile: {
-		select: profileBaseSelect,
-	},
 	role: true,
 }
 
 export const userRegisterSelect = {
 	...userBaseSelect,
+	profile: {
+		select: profileBaseSelect,
+	},
 }
 
 export const userLoginSelect = {
-	...userBaseSelect,
+	id: true,
 	profile: {
 		select: {
 			...profileBaseSelect,
 			password: true,
 		},
 	},
+	role: true,
 }
 
 export const userCheckSelect = {
@@ -38,4 +39,7 @@ export const userTokensSelect = {
 
 export const userFullSelect = {
 	...userBaseSelect,
+	profile: {
+		select: profileBaseSelect,
+	},
 }

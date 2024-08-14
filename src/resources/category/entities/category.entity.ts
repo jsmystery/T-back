@@ -35,6 +35,15 @@ export class NestedCategory {
 }
 
 @ObjectType()
+export class SelectCategory {
+	@Field(() => Int)
+	id: number
+
+	@Field(() => String)
+	name: string
+}
+
+@ObjectType()
 export class Category extends CategoryCard {
 	@Field(() => Seo)
 	seo: Seo

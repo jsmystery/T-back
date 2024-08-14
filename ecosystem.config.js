@@ -26,8 +26,8 @@ module.exports = {
 				DATABASE_URL:
 					'postgresql://gurgen:Koribla-1@localhost:5432/twelbi?schema=public',
 				JWT_SECRET: "&*!%@$^**&()&*>{:'<'}'>ASC:{'X><}",
-				SHOP_ID: '376215',
-				PAYMENT_TOKEN: 'test_bT4PaEnsWxVHGsA48aUJXjKJwH0CBdMF6VL3aoLiq0Y',
+				SHOP_ID: '419446',
+				PAYMENT_TOKEN: 'test_kS9TqBHzI_EeeuuV82iNk22epWr26hg3BK_dU-kQKEg',
 			},
 		},
 	],

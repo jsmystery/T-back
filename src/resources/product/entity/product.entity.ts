@@ -1,6 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { Id } from 'src/global/entities/global.entity'
-import { Visibility } from 'src/global/enums/query.enum'
 import {
 	NestedBrand,
 	NestedProductBrand,
@@ -52,9 +51,6 @@ export class Product extends Id {
 
 	@Field(() => String)
 	createdAt: string
-
-	@Field(() => Visibility)
-	visibility: Visibility
 }
 
 @ObjectType()
@@ -82,9 +78,6 @@ export class ProductCard extends Id {
 
 	@Field(() => NestedBrand)
 	provider: NestedBrand
-
-	@Field(() => Visibility)
-	visibility: Visibility
 }
 
 @ObjectType()

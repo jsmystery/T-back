@@ -8,8 +8,8 @@ import { PrismaService } from 'src/prisma/prisma.service'
 import { dateFormat } from 'src/utils/formats/date-format.util'
 import { queryProductFilters } from 'src/utils/query/query-product-filters.util'
 import { HookService } from '../hook/hook.service'
+import { NestedOrder } from '../order/entities/order.entity'
 import { PaginationService } from '../pagination/pagination.service'
-import { NestedTariff } from '../tariff/entities/tariff.entity'
 import { User } from '../user/entities/full/user.entity'
 import { UserRole } from '../user/enums/user-role.enum'
 import { AnnouncementCard } from './entity/announcement.entity'
@@ -58,7 +58,6 @@ export class ProductService {
 				ratesCount: product._count.reviews,
 				category: product.category,
 				provider: product.brand,
-				visibility: product.visibility,
 			}
 		}) as ProductCard[]
 
@@ -99,18 +98,26 @@ export class ProductService {
 				sku: product.sku,
 				views: product.views,
 				createdAt: dateFormat(product.createdAt, 'DD MMMM YYYY'),
-				tariffs: product.tariffs.map((tariff) => {
-					const expirationDate = new Date(tariff.createdAt)
-					expirationDate.setDate(expirationDate.getDate() + tariff.days)
-					const now = new Date()
-					const timeDifference = expirationDate.getTime() - now.getTime()
-					const isLittleLeft = timeDifference < 24 * 60 * 60 * 1000
+				orders: product.orders.map((order) => {
+					let data = {}
+
+					if (order.expirationAt) {
+						const now = new Date()
+						const timeDifference = order.expirationAt.getTime() - now.getTime()
+						const isLittleLeft = timeDifference < 24 * 60 * 60 * 1000
+
+						data = {
+							expirationDate: dateFormat(order.expirationAt, 'DD.MM.YYYY'),
+							isLittleLeft,
+						}
+					}
 
 					return {
-						expirationAt: dateFormat(expirationDate, 'DD.MM.YYYY'),
-						isLittleLeft,
-						type: tariff.type,
-					} as NestedTariff
+						...data,
+						tariff: {
+							type: order.tariff.type,
+						},
+					} as NestedOrder
 				}),
 			}
 		}) as AnnouncementCard[]
@@ -173,7 +180,6 @@ export class ProductService {
 			},
 			views: product.views,
 			createdAt: dateFormat(product.createdAt, 'DD MMMM YYYY'),
-			visibility: product.visibility,
 		} as Product
 	}
 
@@ -182,10 +188,12 @@ export class ProductService {
 			const { poster, video, images, ...inputData } = input
 
 			const uploadPromises = [
-				this.hookService.uploadFile('products', poster),
-				...(video ? [this.hookService.uploadFile('products', video)] : []),
-				...images.map((image) =>
-					this.hookService.uploadFile('products', image)
+				this.hookService.uploadFile('products', 'poster', poster),
+				...(video
+					? [this.hookService.uploadFile('products', 'video', video)]
+					: []),
+				...images.map((image, index) =>
+					this.hookService.uploadFile('products', `image-${index}`, image)
 				),
 			]
 
@@ -235,13 +243,26 @@ export class ProductService {
 			const { poster, video, images, ...inputData } = input
 
 			const uploadPromises = [
-				this.hookService.uploadFile('products', poster, product.posterPath),
+				this.hookService.uploadFile(
+					'products',
+					'poster',
+					poster,
+					product.posterPath
+				),
 				...(video
-					? [this.hookService.uploadFile('products', video, product.videoPath)]
+					? [
+							this.hookService.uploadFile(
+								'products',
+								'video',
+								video,
+								product.videoPath
+							),
+					  ]
 					: []),
 				...images.map((image, index) =>
 					this.hookService.uploadFile(
 						'products',
+						`image-${index}`,
 						image,
 						product.imagesPaths[index]
 					)

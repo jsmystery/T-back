@@ -1,4 +1,7 @@
-import { categoryNestedSelect } from 'src/resources/category/selects/category.select'
+import {
+	categoryEditSelect,
+	categoryNestedSelect,
+} from 'src/resources/category/selects/category.select'
 
 export const brandSelect = {
 	id: true,
@@ -52,6 +55,7 @@ export const accountBrandSelect = {
 	id: true,
 	logoPath: true,
 	name: true,
+	about: true,
 	city: true,
 	balance: true,
 	subscribers: true,
@@ -66,6 +70,9 @@ export const accountBrandSelect = {
 				},
 			},
 		},
+	},
+	category: {
+		select: categoryEditSelect,
 	},
 	_count: {
 		select: {

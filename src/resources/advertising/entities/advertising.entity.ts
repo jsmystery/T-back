@@ -1,6 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { Id } from 'src/global/entities/global.entity'
-import { Visibility } from 'src/global/enums/query.enum'
 import { AdvertisingType } from '../enums/advertising-type.enum'
 
 @ObjectType()
@@ -22,9 +21,6 @@ export class Advertising extends Id {
 
 	@Field(() => AdvertisingType)
 	type: AdvertisingType
-
-	@Field(() => Visibility, { nullable: true })
-	visibility?: Visibility
 }
 
 @ObjectType()
