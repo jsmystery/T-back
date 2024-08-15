@@ -42,4 +42,9 @@ export const userFullSelect = {
 	profile: {
 		select: profileBaseSelect,
 	},
+	brand: {
+		select: {
+			id: true
+		}
+	}
 }

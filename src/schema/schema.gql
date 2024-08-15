@@ -89,6 +89,17 @@ type AllReviews {
   reviews: [ReviewCard!]!
 }
 
+type Announcement {
+  about: String!
+  category: SelectCategory!
+  imagesPaths: [String!]!
+  name: String!
+  posterPath: String!
+  prices: [Price!]!
+  sku: String!
+  videoPath: String!
+}
+
 type AnnouncementCard {
   city: String!
   createdAt: String!
@@ -238,10 +249,11 @@ type Mutation {
   createAdvertising: Id!
   createBrand(data: BrandInput!): AccountBrand!
   createCategory: Boolean!
-  createProduct(data: ProductInput!): ProductCard!
   deleteAdvertising(id: Int!): Boolean!
   deleteCategory(id: Int!): Boolean!
   deleteProduct(id: Int!): Int!
+  editAnnouncement(announcementId: Int, data: ProductInput!): AnnouncementCard!
+  editProduct(data: ProductInput!, productId: Int): ProductCard!
   jwtConfirmation(data: JwtAuthConfirmationInput!): Boolean!
   jwtLogin(data: JwtAuthLoginInput!): SessionUserResponse!
   jwtReset(data: JwtAuthResetInput!): Boolean!
@@ -251,7 +263,6 @@ type Mutation {
   updateAdvertising(data: AdvertisingInput!, id: Int!): Boolean!
   updateBrand(data: BrandInput!): AccountBrand!
   updateCategory(data: CategoryInput!, id: Int!): Boolean!
-  updateProduct(data: ProductInput!, id: Int!): ProductCard!
 }
 
 type NestedBrand {
@@ -294,13 +305,13 @@ input OrderInput {
 }
 
 type Price {
-  minQuantity: Int!
-  price: Int!
+  minQuantity: String!
+  price: String!
 }
 
 input PriceInput {
-  minQuantity: Int!
-  price: Int!
+  minQuantity: String!
+  price: String!
 }
 
 type Product {
@@ -336,12 +347,15 @@ type ProductCard {
 input ProductInput {
   about: String!
   category: SelectInput!
-  images: [Upload!]!
+  imagesFiles: [Upload!]
+  imagesPaths: [String!]
   name: String!
-  poster: Upload!
+  posterFile: Upload
+  posterPath: String
   prices: [PriceInput!]!
   sku: String!
-  video: Upload
+  videoFile: Upload
+  videoPath: String
 }
 
 input ProductQueryInput {
@@ -365,6 +379,7 @@ type Query {
   advertisements(query: FullestQueryInput!): AllAdvertisements!
   advertisementsByTypes(types: [AdvertisingType!]!): [Advertising!]!
   advertisingById(id: Int!): CurrentAdvertising!
+  announcementById(id: Int!): Announcement!
   announcements(query: ProductQueryInput!): AllAnnouncements!
   brand(slug: String!): Brand!
   brands(query: BrandQueryInput!): AllBrands!
@@ -375,6 +390,7 @@ type Query {
   productById(id: Int!): Product!
   products(query: ProductQueryInput!): AllProducts!
   reviews(query: QueryInput!): AllReviews!
+  selectCategories: [SelectCategory!]!
   user: SessionUser!
 }
 

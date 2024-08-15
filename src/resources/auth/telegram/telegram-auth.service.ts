@@ -24,6 +24,7 @@ export class TelegramAuthService {
 				},
 				select: {
 					...profileBaseSelect,
+					password: true,
 					user: {
 						select: userBaseSelect,
 					},
@@ -59,7 +60,7 @@ export class TelegramAuthService {
 				select: userRegisterSelect,
 			})
 
-			const tokens = await this.authService.issueTokens(oldUser.user.id)
+			const tokens = await this.authService.issueTokens(newUser.id)
 
 			return {
 				user: newUser,

@@ -14,14 +14,23 @@ export class ProductInput {
 	@Field(() => String)
 	sku: string
 
-	@Field(() => GraphQLUpload)
-	poster: FileUpload
+	@Field(() => GraphQLUpload, { nullable: true })
+	posterFile?: FileUpload
+
+	@Field(() => String, { nullable: true })
+	posterPath?: string
 
 	@Field(() => GraphQLUpload, { nullable: true })
-	video?: FileUpload
+	videoFile?: FileUpload
 
-	@Field(() => [GraphQLUpload])
-	images: FileUpload[]
+	@Field(() => String, { nullable: true })
+	videoPath?: string
+
+	@Field(() => [GraphQLUpload], { nullable: true })
+	imagesFiles?: FileUpload[]
+
+	@Field(() => [String], { nullable: true })
+	imagesPaths?: string[]
 
 	@Field(() => [PriceInput])
 	prices: PriceInput[]

@@ -4,7 +4,11 @@ import { Brand } from '../brand/entities/brand.entity'
 import { CurrentUser } from '../user/decorators/user.decorator'
 import { User } from '../user/entities/full/user.entity'
 import { UserRole } from '../user/enums/user-role.enum'
-import { AllAnnouncements } from './entity/announcement.entity'
+import {
+	AllAnnouncements,
+	Announcement,
+	AnnouncementCard,
+} from './entity/announcement.entity'
 import { AllProducts, Product, ProductCard } from './entity/product.entity'
 import { ProductQueryInput } from './inputs/product-query.input'
 import { ProductInput } from './inputs/product.input'
@@ -35,32 +39,45 @@ export class ProductResolver {
 	// Admin and Provider Place
 	@Auth(UserRole.PROVIDER)
 	@Query(() => Product, { name: 'productById' })
-	async getById(@Args('id', { type: () => Int }) id: number) {
-		return this.productService.byId(id)
+	async getProductById(@Args('id', { type: () => Int }) id: number) {
+		return this.productService.byId(id, 'product')
 	}
 
 	@Auth(UserRole.PROVIDER)
-	@Mutation(() => ProductCard, { name: 'updateProduct' })
-	async update(
-		@Args('id', { type: () => Int }) id: number,
-		@Args('data') input: ProductInput
+	@Query(() => Announcement, { name: 'announcementById' })
+	async getAnnouncementById(@Args('id', { type: () => Int }) id: number) {
+		return this.productService.byId(id, 'announcement')
+	}
+
+	@Auth(UserRole.PROVIDER)
+	@Mutation(() => ProductCard, { name: 'editProduct' })
+	async editProduct(
+		@Args('data') input: ProductInput,
+		@CurrentUser('brand') { id: brandId }: Brand,
+		@Args('productId', { type: () => Int, nullable: true }) productId?: number
 	) {
-		return this.productService.update(+id, input)
+		return this.productService.edit('product', input, brandId, productId)
+	}
+
+	@Auth(UserRole.PROVIDER)
+	@Mutation(() => AnnouncementCard, { name: 'editAnnouncement' })
+	async editAnnouncement(
+		@Args('data') input: ProductInput,
+		@CurrentUser('brand') { id: brandId }: Brand,
+		@Args('announcementId', { type: () => Int, nullable: true })
+		announcementId?: number
+	) {
+		return this.productService.edit(
+			'announcement',
+			input,
+			brandId,
+			announcementId
+		)
 	}
 
 	@Auth(UserRole.PROVIDER)
 	@Mutation(() => Int, { name: 'deleteProduct' })
 	async delete(@Args('id', { type: () => Int }) id: number) {
 		return this.productService.delete(id)
-	}
-
-	// Admin Place
-	@Auth(UserRole.PROVIDER)
-	@Mutation(() => ProductCard, { name: 'createProduct' })
-	async create(
-		@Args('data') input: ProductInput,
-		@CurrentUser('brand') { id }: Brand
-	) {
-		return this.productService.create(input, id)
 	}
 }

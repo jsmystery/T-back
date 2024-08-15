@@ -1,6 +1,8 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { Id } from 'src/global/entities/global.entity'
+import { SelectCategory } from 'src/resources/category/entities/category.entity'
 import { NestedOrder } from 'src/resources/order/entities/order.entity'
+import { Price } from './price.entity'
 
 @ObjectType()
 export class AnnouncementCard extends Id {
@@ -39,4 +41,31 @@ export class AllAnnouncements {
 
 	@Field(() => Int)
 	count: number
+}
+
+@ObjectType()
+export class Announcement {
+	@Field(() => String)
+	name: string
+
+	@Field(() => String)
+	about: string
+
+	@Field(() => String)
+	sku: string
+
+	@Field(() => String)
+	posterPath: string
+
+	@Field(() => String)
+	videoPath: string
+
+	@Field(() => [String])
+	imagesPaths: string[]
+
+	@Field(() => [Price])
+	prices: Price[]
+
+	@Field(() => SelectCategory)
+	category: SelectCategory
 }

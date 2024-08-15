@@ -16,7 +16,10 @@ import { AnnouncementCard } from './entity/announcement.entity'
 import { Product, ProductCard } from './entity/product.entity'
 import { ProductQueryInput } from './inputs/product-query.input'
 import { ProductInput } from './inputs/product.input'
-import { announcementCardSelect } from './selects/announcement.selec'
+import {
+	announcementCardSelect,
+	announcementSelect,
+} from './selects/announcement.select'
 import { productCardSelect, productSelect } from './selects/product.select'
 
 @Injectable()
@@ -129,12 +132,12 @@ export class ProductService {
 	}
 
 	// Admin and Provider Place
-	async byId(id: number) {
+	async byId(id: number, type: 'product' | 'announcement') {
 		const product = await this.prisma.product.findUnique({
 			where: {
 				id,
 			},
-			select: productSelect,
+			select: type === 'product' ? productSelect : announcementSelect,
 		})
 
 		if (!product) throw new NotFoundException('Продукт не найден.')
@@ -161,8 +164,8 @@ export class ProductService {
 			videoPath: product.videoPath,
 			imagesPaths: product.imagesPaths,
 			prices: product.prices.map(({ price, minQuantity }) => ({
-				price,
-				minQuantity,
+				price: String(price),
+				minQuantity: String(minQuantity),
 			})),
 			rating: String(product.rating),
 			reviews: product.reviews.map((review) => ({
@@ -189,130 +192,186 @@ export class ProductService {
 		} as Product
 	}
 
-	async create(input: ProductInput, brandId: number) {
+	async edit(
+		type: 'product' | 'announcement',
+		input: ProductInput,
+		brandId: number,
+		productId?: number
+	) {
 		try {
-			const { poster, video, images, ...inputData } = input
-
-			const uploadPromises = [
-				this.hookService.uploadFile('products', 'poster', poster),
-				...(video
-					? [this.hookService.uploadFile('products', 'video', video)]
-					: []),
-				...images.map((image, index) =>
-					this.hookService.uploadFile('products', `image-${index}`, image)
-				),
-			]
-
-			const [posterPath, videoPath, ...imagesPaths] = await Promise.all(
-				uploadPromises
-			)
-
-			return this.prisma.product.create({
-				data: {
-					posterPath,
-					videoPath,
-					imagesPaths,
-					name: inputData.name,
-					about: inputData.about,
-					sku: inputData.sku,
-					prices: {
-						create: inputData.prices.map((price) => ({
-							price: price.price,
-							minQuantity: price.minQuantity,
-						})),
-					},
-					brand: {
-						connect: {
-							id: brandId,
-						},
-					},
-					category: {
-						connect: {
-							id: inputData.category.value,
-						},
-					},
-				},
-				select: productCardSelect,
-			})
-		} catch (error) {
-			if (!IS_PRODUCTION) {
-				console.log(error)
+			if (!productId) {
+				return this.create(input, brandId, type)
+			} else {
+				return this.update(productId, input, type)
 			}
-			throw new BadRequestException('Произошла ошибка при создании категории.')
-		}
-	}
-
-	async update(id: number, input: ProductInput) {
-		try {
-			const product = await this.byId(id)
-
-			const { poster, video, images, ...inputData } = input
-
-			const uploadPromises = [
-				this.hookService.uploadFile(
-					'products',
-					'poster',
-					poster,
-					product.posterPath
-				),
-				...(video
-					? [
-							this.hookService.uploadFile(
-								'products',
-								'video',
-								video,
-								product.videoPath
-							),
-					  ]
-					: []),
-				...images.map((image, index) =>
-					this.hookService.uploadFile(
-						'products',
-						`image-${index}`,
-						image,
-						product.imagesPaths[index]
-					)
-				),
-			]
-
-			const [posterPath, videoPath, ...imagesPaths] = await Promise.all(
-				uploadPromises
-			)
-
-			return this.prisma.product.update({
-				where: {
-					id,
-				},
-				data: {
-					posterPath,
-					videoPath,
-					imagesPaths,
-					name: inputData.name,
-					about: inputData.about,
-					sku: inputData.sku,
-					prices: {
-						deleteMany: {},
-						create: inputData.prices.map((price) => ({
-							price: price.price,
-							minQuantity: price.minQuantity,
-						})),
-					},
-					category: {
-						connect: {
-							id: inputData.category.value,
-						},
-					},
-				},
-				select: productCardSelect,
-			})
 		} catch (error) {
 			if (!IS_PRODUCTION) {
 				console.log(error)
 			}
 			throw new BadRequestException(
-				'Произошла ошибка при обновлении категории.'
+				'Возникла ошибка. Пожалуйста попробуйте позже.'
 			)
 		}
+	}
+
+	async create(
+		input: ProductInput,
+		brandId: number,
+		type: 'product' | 'announcement'
+	) {
+		const isProduct = type === 'product'
+
+		let posterPath = ''
+		let videoPath
+		let imagesPaths = []
+
+		const product = await this.prisma.product.create({
+			data: {
+				posterPath,
+				videoPath,
+				imagesPaths,
+				name: input.name,
+				about: input.about,
+				sku: input.sku,
+				prices: {
+					create: input.prices.map((price) => ({
+						price: +price.price,
+						minQuantity: +price.minQuantity,
+					})),
+				},
+				brand: {
+					connect: {
+						id: brandId,
+					},
+				},
+				category: {
+					connect: {
+						id: input.category.value,
+					},
+				},
+			},
+			select: {
+				id: true,
+			},
+		})
+
+		if (input.posterFile) {
+			posterPath = await this.hookService.uploadFile(
+				`products/${product.id}`,
+				'poster',
+				input.posterFile
+			)
+		} else {
+			posterPath = input.posterPath
+		}
+
+		if (input.videoFile) {
+			videoPath = await this.hookService.uploadFile(
+				`products/${product.id}`,
+				'video',
+				input.videoFile
+			)
+		} else {
+			videoPath = input.videoPath
+		}
+
+		if (input.imagesFiles) {
+			imagesPaths = input.imagesFiles.map(async (path, index) => {
+				await this.hookService.uploadFile(
+					`products/${product.id}`,
+					`image-${index}`,
+					path
+				)
+			})
+		} else {
+			imagesPaths = input.imagesPaths
+		}
+
+		return this.prisma.product.update({
+			where: {
+				id: product.id,
+			},
+			data: {
+				posterPath,
+				videoPath,
+				imagesPaths,
+			},
+			select: isProduct ? productCardSelect : announcementCardSelect,
+		})
+	}
+
+	async update(
+		id: number,
+		input: ProductInput,
+		type: 'product' | 'announcement'
+	) {
+		const product = await this.byId(id, 'announcement')
+
+		let posterPath = ''
+		let videoPath
+		let imagesPaths = []
+
+		if (input.posterFile) {
+			posterPath = await this.hookService.uploadFile(
+				`products/${product.id}`,
+				'poster',
+				input.posterFile,
+				product.posterPath
+			)
+		} else {
+			posterPath = input.posterPath
+		}
+
+		if (input.videoFile) {
+			videoPath = await this.hookService.uploadFile(
+				`products/${product.id}`,
+				'video',
+				input.videoFile,
+				product.videoPath
+			)
+		} else {
+			videoPath = input.videoPath
+		}
+
+		if (input.imagesFiles) {
+			imagesPaths = input.imagesFiles.map(async (path, index) => {
+				await this.hookService.uploadFile(
+					`products/${product.id}`,
+					`image-${index}`,
+					path,
+					product.imagesPaths[index]
+				)
+			})
+		} else {
+			imagesPaths = input.imagesPaths
+		}
+
+		return this.prisma.product.update({
+			where: {
+				id,
+			},
+			data: {
+				posterPath,
+				videoPath,
+				imagesPaths,
+				name: input.name,
+				about: input.about,
+				sku: input.sku,
+				prices: {
+					deleteMany: {},
+					create: input.prices.map((price) => ({
+						price: +price.price,
+						minQuantity: +price.minQuantity,
+					})),
+				},
+				category: {
+					connect: {
+						id: input.category.value,
+					},
+				},
+			},
+			select: type === 'product' ? productCardSelect : announcementCardSelect,
+		})
 	}
 
 	async delete(id: number) {

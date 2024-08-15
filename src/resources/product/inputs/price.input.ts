@@ -1,10 +1,10 @@
-import { Field, InputType, Int } from '@nestjs/graphql'
+import { Field, InputType } from '@nestjs/graphql'
 
 @InputType()
 export class PriceInput {
-	@Field(() => Int)
-	price: number
+	@Field(() => String)
+	price: string
 
-	@Field(() => Int)
-	minQuantity: number
+	@Field(() => String)
+	minQuantity: string
 }
