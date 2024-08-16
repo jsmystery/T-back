@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { createWriteStream, ensureDir, unlink } from 'fs-extra'
+import { createWriteStream, ensureDir, pathExists, unlink } from 'fs-extra'
 import type { FileUpload } from 'graphql-upload-ts'
 import { extname } from 'path'
 import { SERVER_STATIC } from 'src/global/constants/global.constants'
@@ -46,7 +46,12 @@ export class HookService {
 		const fullPath = `/${SERVER_STATIC.NAME}/${filePath}`
 
 		if (currentPath) {
-			await unlink(`${SERVER_STATIC.ROOT}/${currentPath}`)
+			const fullPath = `${SERVER_STATIC.ROOT}/${currentPath}`
+			const exists = await pathExists(fullPath)
+
+			if (exists) {
+				await unlink(fullPath)
+			}
 		}
 
 		const readStream = createReadStream()

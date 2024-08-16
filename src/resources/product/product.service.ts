@@ -198,11 +198,21 @@ export class ProductService {
 		brandId: number,
 		productId?: number
 	) {
+		const isProduct = type === 'product'
+
 		try {
 			if (!productId) {
-				return this.create(input, brandId, type)
+				if (isProduct) {
+					return this.createProduct(input, brandId)
+				} else {
+					return this.createAnnouncement(input, brandId)
+				}
 			} else {
-				return this.update(productId, input, type)
+				if (isProduct) {
+					return this.updateProduct(productId, input)
+				} else {
+					return this.updateAnnouncement(productId, input)
+				}
 			}
 		} catch (error) {
 			if (!IS_PRODUCTION) {
@@ -214,13 +224,7 @@ export class ProductService {
 		}
 	}
 
-	async create(
-		input: ProductInput,
-		brandId: number,
-		type: 'product' | 'announcement'
-	) {
-		const isProduct = type === 'product'
-
+	async createAnnouncement(input: ProductInput, brandId: number) {
 		let posterPath = ''
 		let videoPath
 		let imagesPaths = []
@@ -287,7 +291,7 @@ export class ProductService {
 			imagesPaths = input.imagesPaths
 		}
 
-		return this.prisma.product.update({
+		const createdProduct = await this.prisma.product.update({
 			where: {
 				id: product.id,
 			},
@@ -296,15 +300,48 @@ export class ProductService {
 				videoPath,
 				imagesPaths,
 			},
-			select: isProduct ? productCardSelect : announcementCardSelect,
+			select: announcementCardSelect,
 		})
+
+		const prices = createdProduct.prices.map((item) => item.price)
+		const minPrice = Math.min(...prices)
+		const maxPrice = Math.max(...prices)
+
+		return {
+			id: createdProduct.id,
+			name: createdProduct.name,
+			posterPath: createdProduct.posterPath,
+			minPrice,
+			maxPrice,
+			city: createdProduct.brand.city,
+			sku: createdProduct.sku,
+			views: createdProduct.views,
+			createdAt: dateFormat(createdProduct.createdAt, 'DD MMMM YYYY'),
+			orders: createdProduct.orders.map((order) => {
+				let data = {}
+
+				if (order.expirationAt) {
+					const now = new Date()
+					const timeDifference = order.expirationAt.getTime() - now.getTime()
+					const isLittleLeft = timeDifference < 24 * 60 * 60 * 1000
+
+					data = {
+						expirationDate: dateFormat(order.expirationAt, 'DD.MM.YYYY'),
+						isLittleLeft,
+					}
+				}
+
+				return {
+					...data,
+					tariff: {
+						type: order.tariff.type,
+					},
+				} as NestedOrder
+			}),
+		} as AnnouncementCard
 	}
 
-	async update(
-		id: number,
-		input: ProductInput,
-		type: 'product' | 'announcement'
-	) {
+	async updateAnnouncement(id: number, input: ProductInput) {
 		const product = await this.byId(id, 'announcement')
 
 		let posterPath = ''
@@ -346,7 +383,7 @@ export class ProductService {
 			imagesPaths = input.imagesPaths
 		}
 
-		return this.prisma.product.update({
+		const updatedProduct = await this.prisma.product.update({
 			where: {
 				id,
 			},
@@ -370,8 +407,227 @@ export class ProductService {
 					},
 				},
 			},
-			select: type === 'product' ? productCardSelect : announcementCardSelect,
+			select: announcementCardSelect,
 		})
+
+		const prices = updatedProduct.prices.map((item) => item.price)
+		const minPrice = Math.min(...prices)
+		const maxPrice = Math.max(...prices)
+
+		return {
+			id: updatedProduct.id,
+			name: updatedProduct.name,
+			posterPath: updatedProduct.posterPath,
+			minPrice,
+			maxPrice,
+			city: updatedProduct.brand.city,
+			sku: updatedProduct.sku,
+			views: updatedProduct.views,
+			createdAt: dateFormat(updatedProduct.createdAt, 'DD MMMM YYYY'),
+			orders: updatedProduct.orders.map((order) => {
+				let data = {}
+
+				if (order.expirationAt) {
+					const now = new Date()
+					const timeDifference = order.expirationAt.getTime() - now.getTime()
+					const isLittleLeft = timeDifference < 24 * 60 * 60 * 1000
+
+					data = {
+						expirationDate: dateFormat(order.expirationAt, 'DD.MM.YYYY'),
+						isLittleLeft,
+					}
+				}
+
+				return {
+					...data,
+					tariff: {
+						type: order.tariff.type,
+					},
+				} as NestedOrder
+			}),
+		} as AnnouncementCard
+	}
+
+	async createProduct(input: ProductInput, brandId: number) {
+		let posterPath = ''
+		let videoPath
+		let imagesPaths = []
+
+		const product = await this.prisma.product.create({
+			data: {
+				posterPath,
+				videoPath,
+				imagesPaths,
+				name: input.name,
+				about: input.about,
+				sku: input.sku,
+				prices: {
+					create: input.prices.map((price) => ({
+						price: +price.price,
+						minQuantity: +price.minQuantity,
+					})),
+				},
+				brand: {
+					connect: {
+						id: brandId,
+					},
+				},
+				category: {
+					connect: {
+						id: input.category.value,
+					},
+				},
+			},
+			select: {
+				id: true,
+			},
+		})
+
+		if (input.posterFile) {
+			posterPath = await this.hookService.uploadFile(
+				`products/${product.id}`,
+				'poster',
+				input.posterFile
+			)
+		} else {
+			posterPath = input.posterPath
+		}
+
+		if (input.videoFile) {
+			videoPath = await this.hookService.uploadFile(
+				`products/${product.id}`,
+				'video',
+				input.videoFile
+			)
+		} else {
+			videoPath = input.videoPath
+		}
+
+		if (input.imagesFiles) {
+			imagesPaths = input.imagesFiles.map(async (path, index) => {
+				await this.hookService.uploadFile(
+					`products/${product.id}`,
+					`image-${index}`,
+					path
+				)
+			})
+		} else {
+			imagesPaths = input.imagesPaths
+		}
+
+		const createdProduct = await this.prisma.product.update({
+			where: {
+				id: product.id,
+			},
+			data: {
+				posterPath,
+				videoPath,
+				imagesPaths,
+			},
+			select: productCardSelect,
+		})
+
+		const prices = createdProduct.prices.map((item) => item.price)
+		const minPrice = Math.min(...prices)
+		const maxPrice = Math.max(...prices)
+
+		return {
+			id: createdProduct.id,
+			name: createdProduct.name,
+			posterPath: createdProduct.posterPath,
+			minPrice,
+			maxPrice,
+			rating: createdProduct.rating,
+			ratesCount: createdProduct._count.reviews,
+			category: createdProduct.category,
+			provider: createdProduct.brand,
+		}
+	}
+
+	async updateProduct(id: number, input: ProductInput) {
+		const product = await this.byId(id, 'announcement')
+
+		let posterPath = ''
+		let videoPath
+		let imagesPaths = []
+
+		if (input.posterFile) {
+			posterPath = await this.hookService.uploadFile(
+				`products/${product.id}`,
+				'poster',
+				input.posterFile,
+				product.posterPath
+			)
+		} else {
+			posterPath = input.posterPath
+		}
+
+		if (input.videoFile) {
+			videoPath = await this.hookService.uploadFile(
+				`products/${product.id}`,
+				'video',
+				input.videoFile,
+				product.videoPath
+			)
+		} else {
+			videoPath = input.videoPath
+		}
+
+		if (input.imagesFiles) {
+			imagesPaths = input.imagesFiles.map(async (path, index) => {
+				await this.hookService.uploadFile(
+					`products/${product.id}`,
+					`image-${index}`,
+					path,
+					product.imagesPaths[index]
+				)
+			})
+		} else {
+			imagesPaths = input.imagesPaths
+		}
+
+		const updatedProduct = await this.prisma.product.update({
+			where: {
+				id,
+			},
+			data: {
+				posterPath,
+				videoPath,
+				imagesPaths,
+				name: input.name,
+				about: input.about,
+				sku: input.sku,
+				prices: {
+					deleteMany: {},
+					create: input.prices.map((price) => ({
+						price: +price.price,
+						minQuantity: +price.minQuantity,
+					})),
+				},
+				category: {
+					connect: {
+						id: input.category.value,
+					},
+				},
+			},
+			select: productCardSelect,
+		})
+
+		const prices = updatedProduct.prices.map((item) => item.price)
+		const minPrice = Math.min(...prices)
+		const maxPrice = Math.max(...prices)
+
+		return {
+			id: updatedProduct.id,
+			name: updatedProduct.name,
+			posterPath: updatedProduct.posterPath,
+			minPrice,
+			maxPrice,
+			rating: updatedProduct.rating,
+			ratesCount: updatedProduct._count.reviews,
+			category: updatedProduct.category,
+			provider: updatedProduct.brand,
+		}
 	}
 
 	async delete(id: number) {
