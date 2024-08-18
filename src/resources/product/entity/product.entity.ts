@@ -4,7 +4,10 @@ import {
 	NestedBrand,
 	NestedProductBrand,
 } from 'src/resources/brand/entities/brand.entity'
-import { NestedCategory } from 'src/resources/category/entities/category.entity'
+import {
+	NestedCategory,
+	SelectCategory,
+} from 'src/resources/category/entities/category.entity'
 import { ReviewCard } from 'src/resources/review/entities/review.entity'
 import { Price } from './price.entity'
 
@@ -42,6 +45,51 @@ export class Product extends Id {
 
 	@Field(() => NestedCategory)
 	category: NestedCategory
+
+	@Field(() => NestedProductBrand)
+	provider: NestedProductBrand
+
+	@Field(() => Int)
+	views: number
+
+	@Field(() => String)
+	createdAt: string
+}
+
+@ObjectType()
+export class ProductEdit extends Id {
+	@Field(() => String)
+	name: string
+
+	@Field(() => String)
+	about: string
+
+	@Field(() => String)
+	sku: string
+
+	@Field(() => String)
+	posterPath: string
+
+	@Field(() => String, { nullable: true })
+	videoPath?: string
+
+	@Field(() => [String])
+	imagesPaths: string[]
+
+	@Field(() => [Price])
+	prices: Price[]
+
+	@Field(() => String)
+	rating: string
+
+	@Field(() => [ReviewCard])
+	reviews: ReviewCard[]
+
+	@Field(() => Int)
+	reviewsCount: number
+
+	@Field(() => SelectCategory)
+	category: SelectCategory
 
 	@Field(() => NestedProductBrand)
 	provider: NestedProductBrand

@@ -34,6 +34,7 @@ export const announcementSelect = {
 	prices: {
 		select: {
 			price: true,
+			minQuantity: true,
 		},
 	},
 	category: {

@@ -1,5 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql'
 import { FileUpload, GraphQLUpload } from 'graphql-upload-ts'
+import { FileInput, FilePathInput } from 'src/global/inputs/file.input'
 import { SelectInput } from 'src/global/inputs/select.input'
 import { PriceInput } from './price.input'
 
@@ -26,11 +27,11 @@ export class ProductInput {
 	@Field(() => String, { nullable: true })
 	videoPath?: string
 
-	@Field(() => [GraphQLUpload], { nullable: true })
-	imagesFiles?: FileUpload[]
+	@Field(() => [FileInput], { nullable: true })
+	imagesFiles?: FileInput[]
 
-	@Field(() => [String], { nullable: true })
-	imagesPaths?: string[]
+	@Field(() => [FilePathInput], { nullable: true })
+	imagesPaths?: FilePathInput[]
 
 	@Field(() => [PriceInput])
 	prices: PriceInput[]

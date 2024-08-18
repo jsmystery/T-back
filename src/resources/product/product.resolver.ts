@@ -9,7 +9,12 @@ import {
 	Announcement,
 	AnnouncementCard,
 } from './entity/announcement.entity'
-import { AllProducts, Product, ProductCard } from './entity/product.entity'
+import {
+	AllProducts,
+	Product,
+	ProductCard,
+	ProductEdit,
+} from './entity/product.entity'
 import { ProductQueryInput } from './inputs/product-query.input'
 import { ProductInput } from './inputs/product.input'
 import { ProductService } from './product.service'
@@ -23,9 +28,13 @@ export class ProductResolver {
 		return this.productService.getAllProducts(input)
 	}
 
+	@Auth()
 	@Query(() => AllAnnouncements, { name: 'announcements' })
-	async getAllAnnouncements(@Args('query') input: ProductQueryInput) {
-		return this.productService.getAllAnnouncements(input)
+	async getAllAnnouncements(
+		@Args('query') input: ProductQueryInput,
+		@CurrentUser('brand') { id }: Brand
+	) {
+		return this.productService.getAllAnnouncements(input, id)
 	}
 
 	@Query(() => Product, { name: 'currentProduct' })
@@ -38,15 +47,15 @@ export class ProductResolver {
 
 	// Admin and Provider Place
 	@Auth(UserRole.PROVIDER)
-	@Query(() => Product, { name: 'productById' })
+	@Query(() => ProductEdit, { name: 'productById' })
 	async getProductById(@Args('id', { type: () => Int }) id: number) {
-		return this.productService.byId(id, 'product')
+		return this.productService.productById(id)
 	}
 
 	@Auth(UserRole.PROVIDER)
 	@Query(() => Announcement, { name: 'announcementById' })
 	async getAnnouncementById(@Args('id', { type: () => Int }) id: number) {
-		return this.productService.byId(id, 'announcement')
+		return this.productService.announcementById(id)
 	}
 
 	@Auth(UserRole.PROVIDER)

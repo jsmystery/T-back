@@ -70,10 +70,13 @@ export class ProductService {
 		}
 	}
 
-	async getAllAnnouncements(input: ProductQueryInput) {
+	async getAllAnnouncements(input: ProductQueryInput, brandId: number) {
 		const { createFilter, getSortFilter } = queryProductFilters()
 		const { perPage, skip } = this.paginationService.getPagination(input)
-		const filters = createFilter(input)
+		const filters = createFilter({
+			...input,
+			brandId,
+		})
 
 		const [queriedAnnouncements, count] = await Promise.all([
 			this.prisma.product.findMany({
@@ -110,7 +113,7 @@ export class ProductService {
 						const isLittleLeft = timeDifference < 24 * 60 * 60 * 1000
 
 						data = {
-							expirationDate: dateFormat(order.expirationAt, 'DD.MM.YYYY'),
+							expirationDate: dateFormat(order.expirationAt, 'DD.MM HH:mm'),
 							isLittleLeft,
 						}
 					}
@@ -132,15 +135,28 @@ export class ProductService {
 	}
 
 	// Admin and Provider Place
-	async byId(id: number, type: 'product' | 'announcement') {
+	async productById(id: number) {
 		const product = await this.prisma.product.findUnique({
 			where: {
 				id,
 			},
-			select: type === 'product' ? productSelect : announcementSelect,
+			select: productSelect,
 		})
 
 		if (!product) throw new NotFoundException('Продукт не найден.')
+
+		return product
+	}
+
+	async announcementById(id: number) {
+		const product = await this.prisma.product.findUnique({
+			where: {
+				id,
+			},
+			select: announcementSelect,
+		})
+
+		if (!product) throw new NotFoundException('Объявление не найдено.')
 
 		return product
 	}
@@ -280,15 +296,19 @@ export class ProductService {
 		}
 
 		if (input.imagesFiles) {
-			imagesPaths = input.imagesFiles.map(async (path, index) => {
-				await this.hookService.uploadFile(
-					`products/${product.id}`,
-					`image-${index}`,
-					path
-				)
-			})
+			imagesPaths = await Promise.all(
+				input.imagesFiles.map(async (path, index) => {
+					const file = await path.file
+					const filePath = await this.hookService.uploadFile(
+						`products/${product.id}`,
+						`image-${index}`,
+						file
+					)
+					return filePath
+				})
+			)
 		} else {
-			imagesPaths = input.imagesPaths
+			imagesPaths = input.imagesPaths.map((image) => image.url)
 		}
 
 		const createdProduct = await this.prisma.product.update({
@@ -326,7 +346,7 @@ export class ProductService {
 					const isLittleLeft = timeDifference < 24 * 60 * 60 * 1000
 
 					data = {
-						expirationDate: dateFormat(order.expirationAt, 'DD.MM.YYYY'),
+						expirationDate: dateFormat(order.expirationAt, 'DD.MM HH:mm'),
 						isLittleLeft,
 					}
 				}
@@ -342,7 +362,7 @@ export class ProductService {
 	}
 
 	async updateAnnouncement(id: number, input: ProductInput) {
-		const product = await this.byId(id, 'announcement')
+		const product = await this.announcementById(id)
 
 		let posterPath = ''
 		let videoPath
@@ -371,16 +391,20 @@ export class ProductService {
 		}
 
 		if (input.imagesFiles) {
-			imagesPaths = input.imagesFiles.map(async (path, index) => {
-				await this.hookService.uploadFile(
-					`products/${product.id}`,
-					`image-${index}`,
-					path,
-					product.imagesPaths[index]
-				)
-			})
+			imagesPaths = await Promise.all(
+				input.imagesFiles.map(async (path, index) => {
+					const file = await path.file
+					const filePath = await this.hookService.uploadFile(
+						`products/${product.id}`,
+						`image-${index}`,
+						file,
+						product.imagesPaths[index]
+					)
+					return filePath
+				})
+			)
 		} else {
-			imagesPaths = input.imagesPaths
+			imagesPaths = input.imagesPaths.map((image) => image.url)
 		}
 
 		const updatedProduct = await this.prisma.product.update({
@@ -433,7 +457,7 @@ export class ProductService {
 					const isLittleLeft = timeDifference < 24 * 60 * 60 * 1000
 
 					data = {
-						expirationDate: dateFormat(order.expirationAt, 'DD.MM.YYYY'),
+						expirationDate: dateFormat(order.expirationAt, 'DD.MM HH:mm'),
 						isLittleLeft,
 					}
 				}
@@ -504,15 +528,19 @@ export class ProductService {
 		}
 
 		if (input.imagesFiles) {
-			imagesPaths = input.imagesFiles.map(async (path, index) => {
-				await this.hookService.uploadFile(
-					`products/${product.id}`,
-					`image-${index}`,
-					path
-				)
-			})
+			imagesPaths = await Promise.all(
+				input.imagesFiles.map(async (path, index) => {
+					const file = await path.file
+					const filePath = await this.hookService.uploadFile(
+						`products/${product.id}`,
+						`image-${index}`,
+						file
+					)
+					return filePath
+				})
+			)
 		} else {
-			imagesPaths = input.imagesPaths
+			imagesPaths = input.imagesPaths.map((image) => image.url)
 		}
 
 		const createdProduct = await this.prisma.product.update({
@@ -545,7 +573,7 @@ export class ProductService {
 	}
 
 	async updateProduct(id: number, input: ProductInput) {
-		const product = await this.byId(id, 'announcement')
+		const product = await this.announcementById(id)
 
 		let posterPath = ''
 		let videoPath
@@ -574,16 +602,20 @@ export class ProductService {
 		}
 
 		if (input.imagesFiles) {
-			imagesPaths = input.imagesFiles.map(async (path, index) => {
-				await this.hookService.uploadFile(
-					`products/${product.id}`,
-					`image-${index}`,
-					path,
-					product.imagesPaths[index]
-				)
-			})
+			imagesPaths = await Promise.all(
+				input.imagesFiles.map(async (path, index) => {
+					const file = await path.file
+					const filePath = await this.hookService.uploadFile(
+						`products/${product.id}`,
+						`image-${index}`,
+						file,
+						product.imagesPaths[index]
+					)
+					return filePath
+				})
+			)
 		} else {
-			imagesPaths = input.imagesPaths
+			imagesPaths = input.imagesPaths.map((image) => image.url)
 		}
 
 		const updatedProduct = await this.prisma.product.update({

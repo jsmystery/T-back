@@ -210,6 +210,14 @@ type CurrentAdvertising {
   weekPrice: String!
 }
 
+input FileInput {
+  file: Upload
+}
+
+input FilePathInput {
+  url: String
+}
+
 input FullestQueryInput {
   page: Int
   perPage: Int
@@ -245,7 +253,6 @@ input JwtAuthVerificationInput {
 
 type Mutation {
   balanceTopUp(data: YookassaInput!): YookassaPayment!
-  buyTariff(data: OrderInput!): NestedOrder!
   createAdvertising: Id!
   createBrand(data: BrandInput!): AccountBrand!
   createCategory: Boolean!
@@ -259,6 +266,7 @@ type Mutation {
   jwtReset(data: JwtAuthResetInput!): Boolean!
   jwtVerification(data: JwtAuthVerificationInput!): Boolean!
   logout: Boolean!
+  placeOrder(data: OrderInput!): NestedOrder!
   telegramAuth(data: TelegramAuthInput!): SessionUserResponse!
   updateAdvertising(data: AdvertisingInput!, id: Int!): Boolean!
   updateBrand(data: BrandInput!): AccountBrand!
@@ -344,11 +352,29 @@ type ProductCard {
   rating: Int!
 }
 
+type ProductEdit {
+  about: String!
+  category: SelectCategory!
+  createdAt: String!
+  id: Int!
+  imagesPaths: [String!]!
+  name: String!
+  posterPath: String!
+  prices: [Price!]!
+  provider: NestedProductBrand!
+  rating: String!
+  reviews: [ReviewCard!]!
+  reviewsCount: Int!
+  sku: String!
+  videoPath: String
+  views: Int!
+}
+
 input ProductInput {
   about: String!
   category: SelectInput!
-  imagesFiles: [Upload!]
-  imagesPaths: [String!]
+  imagesFiles: [FileInput!]
+  imagesPaths: [FilePathInput!]
   name: String!
   posterFile: Upload
   posterPath: String
@@ -387,7 +413,7 @@ type Query {
   categoryById(id: Int!): Category!
   currentProduct(id: Int!): Product!
   jwtRegister(token: String!): SessionUserResponse!
-  productById(id: Int!): Product!
+  productById(id: Int!): ProductEdit!
   products(query: ProductQueryInput!): AllProducts!
   reviews(query: QueryInput!): AllReviews!
   selectCategories: [SelectCategory!]!

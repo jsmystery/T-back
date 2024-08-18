@@ -1,4 +1,6 @@
+import { InjectQueue } from '@nestjs/bull'
 import { BadRequestException, Injectable } from '@nestjs/common'
+import { Queue } from 'bull'
 import { IS_PRODUCTION } from 'src/global/constants/global.constants'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { dateFormat } from 'src/utils/formats/date-format.util'
@@ -7,7 +9,10 @@ import { OrderInput } from './inputs/order.input'
 
 @Injectable()
 export class OrderService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		@InjectQueue('order') private readonly orderBull: Queue
+	) {}
 
 	async buyTariff(userId: number, { productId, tariffType }: OrderInput) {
 		try {
@@ -76,8 +81,16 @@ export class OrderService {
 			const timeDifference = order.expirationAt.getTime() - now.getTime()
 			const isLittleLeft = timeDifference < 24 * 60 * 60 * 1000
 
+			await this.orderBull.add(
+				'order',
+				{
+					orderId: order.id,
+				},
+				{ delay: tariff.duration * 1000, jobId: String(order.id) }
+			)
+
 			return {
-				expirationDate: dateFormat(order.expirationAt, 'DD.MM.YYYY'),
+				expirationDate: dateFormat(order.expirationAt, 'DD.MM HH:mm'),
 				isLittleLeft,
 				tariff: {
 					type: tariffType,
@@ -89,7 +102,7 @@ export class OrderService {
 			if (error.response.error === 'Bad Request') {
 				throw new BadRequestException(error.response.message)
 			} else {
-				throw new BadRequestException('Произошла ошибка во покупки.')
+				throw new BadRequestException('Произошла ошибка во время покупки.')
 			}
 		}
 	}

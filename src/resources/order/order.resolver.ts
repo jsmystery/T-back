@@ -11,7 +11,7 @@ export class OrderResolver {
 	constructor(private readonly orderService: OrderService) {}
 
 	@Auth(UserRole.PROVIDER)
-	@Mutation(() => NestedOrder, { name: 'buyTariff' })
+	@Mutation(() => NestedOrder, { name: 'placeOrder' })
 	async buyTariff(
 		@CurrentUser('id') userId: number,
 		@Args('data') input: OrderInput
