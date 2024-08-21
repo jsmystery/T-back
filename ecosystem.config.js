@@ -8,7 +8,7 @@ module.exports = {
 			ignore_watch: [
 				'node_modules',
 				'dist',
-				'twelbi',
+				'uploads',
 				'src/resources/mail/templates',
 				'src/schema/schema.gql',
 			],

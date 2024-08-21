@@ -11,8 +11,8 @@ const createProducts = async (quantity: number) => {
 		data: {
 			name: 'Авто, мото',
 			slug: 'avto-moto',
-			smallImagePath: '/twelbi/categories/category-1-small-image.png',
-			bigImagePath: '/twelbi/categories/category-1-big-image.png',
+			smallImagePath: '/uploads/categories/category-1-small-image.png',
+			bigImagePath: '/uploads/categories/category-1-big-image.png',
 		},
 	})
 
@@ -21,7 +21,7 @@ const createProducts = async (quantity: number) => {
 			name: 'Lacoste Россия',
 			slug: 'lacoste-russian',
 			city: 'Москва',
-			logoPath: '/twelbi/brands/brand-1-logo.png',
+			logoPath: '/uploads/brands/brand-1-logo.png',
 			about:
 				'Кстати, непосредственные участники технического прогресса формируют глобальную экономическую сеть и при этом — ограничены исключительно образом мышления. Но явные признаки победы институционализации представляют собой не что иное, как квинтэссенцию победы маркетинга над разумом и должны быть своевременно верифицированы. Задача организации, в особенности же сложившаяся структура организации обеспечивает широкому кругу (специалистов) участие в формировании укрепления моральных ценностей.',
 			category: {
@@ -44,14 +44,14 @@ const createProducts = async (quantity: number) => {
 				about:
 					'Футболка Lacoste - идеальный выбор для всех ценителей стиля и качества. Эта уникальная футболка изготовлена из смеси высококачественного хлопка и льна, что обеспечивает комфорт и прочность изделия. Сочетание этих материалов делает футболку Lacoste идеальной для повседневной носки.<br /> <br />Состав футболки Lacoste составляет 70% хлопка и 30% льна, что делает ее не только удобной, но и легкой и дышащей. Ткань приятна к телу и не вызывает раздражения даже при длительном ношении. Эта футболка станет незаменимым элементом гардероба как для повседневного использования, так и для особых случаев.<br /><br />Приобретая футболку Lacoste в официальном магазине, вы гарантированно получаете продукт высочайшего качества и оригинальной фирменный стиль. Будьте уверены, что ваш образ будет безупречен и стильный с этой футболкой от Lacoste.<br /><br />Не упустите возможность обновить свой гардероб с помощью футболки Lacoste - надежной и стильной базовой вещи, которая дополнит любой ваш образ.',
 				sku: `159580428${i}`,
-				posterPath: `/twelbi/products/product-${i}-poster.png`,
-				videoPath: `/twelbi/products/product-${i}-video.mp4`,
+				posterPath: `/uploads/products/product-${i}-poster.png`,
+				videoPath: `/uploads/products/product-${i}-video.mp4`,
 				imagesPaths: [
-					`/twelbi/products/product-${i}-image-1.png`,
-					`/twelbi/products/product-${i}-image-2.png`,
-					`/twelbi/products/product-${i}-image-4.png`,
-					`/twelbi/products/product-${i}-image-5.png`,
-					`/twelbi/products/product-${i}-image-6.png`,
+					`/uploads/products/product-${i}-image-1.png`,
+					`/uploads/products/product-${i}-image-2.png`,
+					`/uploads/products/product-${i}-image-4.png`,
+					`/uploads/products/product-${i}-image-5.png`,
+					`/uploads/products/product-${i}-image-6.png`,
 				],
 				prices: {
 					createMany: {
