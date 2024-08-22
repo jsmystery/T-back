@@ -35,28 +35,12 @@ type Advertising {
   url: String
 }
 
-input AdvertisingInput {
-  alt: String
-  bigImage: Upload!
-  monthPrice: String!
-  resolution: String!
-  smallImage: Upload!
-  type: AdvertisingTypeSelectInput!
-  url: String
-  weekPrice: String!
-}
-
 enum AdvertisingType {
   BANNER
   CARD
   CATALOG
   LARGE
   SMALL
-}
-
-input AdvertisingTypeSelectInput {
-  name: String!
-  value: AdvertisingType!
 }
 
 type AllAdvertisements {
@@ -87,17 +71,6 @@ type AllProducts {
 type AllReviews {
   count: Int!
   reviews: [ReviewCard!]!
-}
-
-type Announcement {
-  about: String!
-  category: SelectCategory!
-  imagesPaths: [String!]!
-  name: String!
-  posterPath: String!
-  prices: [Price!]!
-  sku: String!
-  videoPath: String!
 }
 
 type AnnouncementCard {
@@ -141,19 +114,6 @@ type BrandCard {
   slug: String!
 }
 
-input BrandInput {
-  about: String!
-  category: SelectInput!
-  city: CreatableSelectInput!
-  email: String
-  logoFile: Upload
-  logoPath: String
-  name: String!
-  phone: String
-  telegram: String
-  whatsapp: String
-}
-
 input BrandQueryInput {
   page: Int
   perPage: Int
@@ -163,25 +123,10 @@ input BrandQueryInput {
   sort: Sort!
 }
 
-type Category {
-  bigImagePath: String!
-  name: String!
-  seo: Seo!
-  slug: String!
-  smallImagePath: String!
-}
-
 type CategoryCard {
   bigImagePath: String!
   name: String!
   slug: String!
-  smallImagePath: String!
-}
-
-input CategoryInput {
-  bigImagePath: String!
-  name: String!
-  seo: SeoInput
   smallImagePath: String!
 }
 
@@ -193,40 +138,11 @@ input CategoryQueryInput {
   sort: Sort!
 }
 
-input CreatableSelectInput {
-  name: String!
-  value: String!
-}
-
-type CurrentAdvertising {
-  alt: String
-  bigImagePath: String!
-  id: Int!
-  monthPrice: String!
-  resolution: String
-  smallImagePath: String
-  type: AdvertisingType!
-  url: String
-  weekPrice: String!
-}
-
-input FileInput {
-  file: Upload
-}
-
-input FilePathInput {
-  url: String
-}
-
 input FullestQueryInput {
   page: Int
   perPage: Int
   searchTerm: String
   sort: Sort!
-}
-
-type Id {
-  id: Int!
 }
 
 input JwtAuthConfirmationInput {
@@ -253,14 +169,6 @@ input JwtAuthVerificationInput {
 
 type Mutation {
   balanceTopUp(data: YookassaInput!): YookassaPayment!
-  createAdvertising: Id!
-  createBrand(data: BrandInput!): AccountBrand!
-  createCategory: Boolean!
-  deleteAdvertising(id: Int!): Boolean!
-  deleteCategory(id: Int!): Boolean!
-  deleteProduct(id: Int!): Int!
-  editAnnouncement(announcementId: Int, data: ProductInput!): AnnouncementCard!
-  editProduct(data: ProductInput!, productId: Int): ProductCard!
   jwtConfirmation(data: JwtAuthConfirmationInput!): Boolean!
   jwtLogin(data: JwtAuthLoginInput!): SessionUserResponse!
   jwtReset(data: JwtAuthResetInput!): Boolean!
@@ -268,9 +176,6 @@ type Mutation {
   logout: Boolean!
   placeOrder(data: OrderInput!): NestedOrder!
   telegramAuth(data: TelegramAuthInput!): SessionUserResponse!
-  updateAdvertising(data: AdvertisingInput!, id: Int!): Boolean!
-  updateBrand(data: BrandInput!): AccountBrand!
-  updateCategory(data: CategoryInput!, id: Int!): Boolean!
 }
 
 type NestedBrand {
@@ -317,11 +222,6 @@ type Price {
   price: String!
 }
 
-input PriceInput {
-  minQuantity: String!
-  price: String!
-}
-
 type Product {
   about: String!
   category: NestedCategory!
@@ -352,38 +252,6 @@ type ProductCard {
   rating: Int!
 }
 
-type ProductEdit {
-  about: String!
-  category: SelectCategory!
-  createdAt: String!
-  id: Int!
-  imagesPaths: [String!]!
-  name: String!
-  posterPath: String!
-  prices: [Price!]!
-  provider: NestedProductBrand!
-  rating: String!
-  reviews: [ReviewCard!]!
-  reviewsCount: Int!
-  sku: String!
-  videoPath: String
-  views: Int!
-}
-
-input ProductInput {
-  about: String!
-  category: SelectInput!
-  imagesFiles: [FileInput!]
-  imagesPaths: [FilePathInput!]
-  name: String!
-  posterFile: Upload
-  posterPath: String
-  prices: [PriceInput!]!
-  sku: String!
-  videoFile: Upload
-  videoPath: String
-}
-
 input ProductQueryInput {
   brandId: Int
   page: Int
@@ -404,16 +272,12 @@ type Query {
   account: Account!
   advertisements(query: FullestQueryInput!): AllAdvertisements!
   advertisementsByTypes(types: [AdvertisingType!]!): [Advertising!]!
-  advertisingById(id: Int!): CurrentAdvertising!
-  announcementById(id: Int!): Announcement!
   announcements(query: ProductQueryInput!): AllAnnouncements!
   brand(slug: String!): Brand!
   brands(query: BrandQueryInput!): AllBrands!
   categories(query: CategoryQueryInput!): AllCategories!
-  categoryById(id: Int!): Category!
   currentProduct(id: Int!): Product!
   jwtRegister(token: String!): SessionUserResponse!
-  productById(id: Int!): ProductEdit!
   products(query: ProductQueryInput!): AllProducts!
   reviews(query: QueryInput!): AllReviews!
   selectCategories: [SelectCategory!]!
@@ -440,17 +304,7 @@ type SelectCategory {
   name: String!
 }
 
-input SelectInput {
-  name: String!
-  value: Int!
-}
-
 type Seo {
-  description: String!
-  title: String!
-}
-
-input SeoInput {
   description: String!
   title: String!
 }
@@ -492,9 +346,6 @@ input TelegramAuthInput {
   login: String!
   password: String!
 }
-
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
 
 enum UserRole {
   ADMIN

@@ -11,7 +11,6 @@ import {
 	Brand,
 } from './entities/brand.entity'
 import { BrandQueryInput } from './input/brand-query.input'
-import { BrandInput } from './input/brand.input'
 
 @Resolver()
 export class BrandResolver {
@@ -31,24 +30,5 @@ export class BrandResolver {
 	@Query(() => Account, { name: 'account' })
 	async getAccountBrand(@CurrentUser('id') userId: number) {
 		return this.brandService.byUserId(userId)
-	}
-
-	// Provider place
-	@Auth(UserRole.PROVIDER)
-	@Mutation(() => AccountBrand, { name: 'createBrand' })
-	async createBrand(
-		@CurrentUser('id') userId: number,
-		@Args('data') input: BrandInput
-	) {
-		return this.brandService.create(userId, input)
-	}
-
-	@Auth(UserRole.PROVIDER)
-	@Mutation(() => AccountBrand, { name: 'updateBrand' })
-	async updateBrand(
-		@CurrentUser('id') userId: number,
-		@Args('data') input: BrandInput
-	) {
-		return this.brandService.update(userId, input)
 	}
 }
