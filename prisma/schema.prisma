@@ -223,8 +223,8 @@ model Brand {
 
   categoryId Int? @map("category_id")
 
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int  @unique @map("user_id")
+  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int?  @unique @map("user_id")
 
   @@map("brand")
 }
