@@ -35,11 +35,11 @@ const createProducts = async (quantity: number) => {
 
 	// Используем upsert для создания или обновления бренда
 	const brand = await prisma.brand.upsert({
-		where: { slug: 'lacoste-russian' },
+		where: { slug: 'lacoste-russia' },
 		update: {}, // Оставляем пустым, если не требуется обновление
 		create: {
 			name: 'Lacoste Россия',
-			slug: 'lacoste-russian',
+			slug: 'lacoste-russia',
 			city: 'Москва',
 			logoPath: '/uploads/brands/brand-1-logo.png',
 			about:
