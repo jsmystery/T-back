@@ -15,6 +15,7 @@ export const productCardSelect = {
 			name: true,
 			slug: true,
 			logoPath: true,
+			city: true,
 		},
 	},
 	category: {

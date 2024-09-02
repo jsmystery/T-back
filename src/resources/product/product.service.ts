@@ -156,6 +156,7 @@ export class ProductService {
 				id: product.brand.id,
 				name: product.brand.name,
 				slug: product.brand.slug,
+				city: '',
 				logoPath: product.brand.logoPath,
 				phone: product.brand.user.profile.phone,
 				whatsapp: product.brand.user.profile.whatsapp,

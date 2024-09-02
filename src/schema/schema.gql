@@ -106,6 +106,7 @@ type Brand {
 
 type BrandCard {
   category: NestedCategory!
+  city: String!
   id: Int!
   logoPath: String!
   name: String!
@@ -179,6 +180,7 @@ type Mutation {
 }
 
 type NestedBrand {
+  city: String!
   logoPath: String!
   name: String!
   slug: String!
@@ -196,6 +198,7 @@ type NestedOrder {
 }
 
 type NestedProductBrand {
+  city: String!
   id: Int!
   isBrandOwner: Boolean!
   isSubscribed: Boolean!
@@ -225,6 +228,7 @@ type Price {
 type Product {
   about: String!
   category: NestedCategory!
+  city: String
   createdAt: String!
   id: Int!
   imagesPaths: [String!]!
@@ -242,6 +246,7 @@ type Product {
 
 type ProductCard {
   category: NestedCategory!
+  city: String!
   id: Int!
   maxPrice: Int!
   minPrice: Int!

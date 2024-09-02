@@ -28,6 +28,9 @@ export class Product extends Id {
 	@Field(() => String, { nullable: true })
 	videoPath?: string
 
+	@Field(() => String, { nullable: true })
+	city?: string
+
 	@Field(() => [String])
 	imagesPaths: string[]
 
@@ -124,8 +127,12 @@ export class ProductCard extends Id {
 	@Field(() => NestedCategory)
 	category: NestedCategory
 
+
 	@Field(() => NestedBrand)
 	provider: NestedBrand
+
+	@Field(() => String)
+	city: string
 }
 
 @ObjectType()

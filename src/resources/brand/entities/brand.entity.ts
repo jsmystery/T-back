@@ -16,6 +16,9 @@ export class BrandCard extends Id {
 	slug: string
 
 	@Field(() => String)
+	city: string
+
+	@Field(() => String)
 	logoPath: string
 
 	@Field(() => String)
@@ -44,6 +47,9 @@ export class NestedBrand {
 
 	@Field(() => String)
 	slug: string
+
+	@Field(() => String)
+	city: string
 
 	@Field(() => String)
 	logoPath: string
