@@ -258,6 +258,7 @@ type ProductCard {
 }
 
 input ProductQueryInput {
+  brandCity: String
   brandId: Int
   page: Int
   perPage: Int
@@ -331,7 +332,10 @@ type SessionUserResponse {
 
 enum Sort {
   ASC
+  BRAND
+  CITY
   DESC
+  RATE
 }
 
 type Tariff {

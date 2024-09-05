@@ -9,6 +9,8 @@ export const queryProductFilters = () => {
 
 		if (input.brandId) filters.push(getBrandFilter(input.brandId))
 
+		if (input.brandCity) filters.push(getBrandCityFilter(input.brandCity))
+
 		return filters.length ? { AND: filters } : {}
 	}
 
@@ -34,6 +36,14 @@ export const queryProductFilters = () => {
 
 	const getBrandFilter = (brandId: number) => {
 		return { brandId }
+	}
+
+	const getBrandCityFilter = (city: String) => {
+		return {
+			brand: {
+				city: city,
+			},
+		};
 	}
 
 	const getSearchTermFilter = (searchTerm: string) => {

@@ -9,4 +9,7 @@ export class ProductQueryInput extends FullestQueryInput {
 
 	@Field(() => Int, { nullable: true })
 	brandId?: number
+
+	@Field(() => String, { nullable: true })
+	brandCity?: string
 }

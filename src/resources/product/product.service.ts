@@ -11,6 +11,9 @@ import { Product, ProductCard } from './entity/product.entity'
 import { ProductQueryInput } from './inputs/product-query.input'
 import { announcementCardSelect } from './selects/announcement.select'
 import { productCardSelect, productSelect } from './selects/product.select'
+import { Logger } from '@nestjs/common';
+
+const logger = new Logger('MyService');
 
 @Injectable()
 export class ProductService {
@@ -20,13 +23,21 @@ export class ProductService {
 	) {}
 
 	async getAllProducts(input: ProductQueryInput) {
+		logger.log('input' + JSON.stringify(input));
+		// console.log('Hello from My' + input);
+
 		const { createFilter, getSortFilter } = queryProductFilters()
 		const { perPage, skip } = this.paginationService.getPagination(input)
 		const filters = createFilter(input)
+		logger.log('filters');
+		logger.log(JSON.stringify(filters));
+		logger.log("getSortFilter" + JSON.stringify(getSortFilter(input)));
+
+
 
 		const [queriedProducts, count] = await Promise.all([
 			this.prisma.product.findMany({
-				where: filters,
+				where: filters, //createFilter / array
 				orderBy: getSortFilter(input),
 				skip,
 				take: perPage,
