@@ -332,8 +332,6 @@ type SessionUserResponse {
 
 enum Sort {
   ASC
-  BRAND
-  CITY
   DESC
   RATE
 }

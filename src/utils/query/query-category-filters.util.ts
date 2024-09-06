@@ -14,6 +14,9 @@ export const queryCategoryFilters = () => {
 	}
 
 	const getSortFilter = (sort: Sort): any[] => {
+		// if (sort === Sort.RATE) {
+		// 	return [{ rating:'desc'}]
+		// }
 		return [{ createdAt: sort === Sort.DESC ? 'desc' : 'asc' }]
 	}
 

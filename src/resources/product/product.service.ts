@@ -24,7 +24,6 @@ export class ProductService {
 
 	async getAllProducts(input: ProductQueryInput) {
 		logger.log('input' + JSON.stringify(input));
-		// console.log('Hello from My' + input);
 
 		const { createFilter, getSortFilter } = queryProductFilters()
 		const { perPage, skip } = this.paginationService.getPagination(input)

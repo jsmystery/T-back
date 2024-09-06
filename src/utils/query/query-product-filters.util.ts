@@ -27,6 +27,9 @@ export const queryProductFilters = () => {
 	}
 
 	const getCreatedSortFilter = (sort: Sort) => {
+		if (sort === Sort.RATE) {
+			return { rating:'desc'}
+		}
 		return { createdAt: sort === Sort.DESC ? 'desc' : 'asc' }
 	}
 
