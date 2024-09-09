@@ -30,11 +30,6 @@ const createUsers = async () => {
 const createProducts = async (quantity: number) => {
 	const products: Product[] = []
 
-	// const useFirstBrand = Math.random() < 0.5;
-	// const brands = [brand, brand2];
-
-
-
 	// Используем upsert для создания или обновления категории
 	const category = await prisma.category.upsert({
 		where: { slug: 'avto-moto' },
@@ -47,53 +42,94 @@ const createProducts = async (quantity: number) => {
 		},
 	})
 
-	// Используем upsert для создания или обновления бренда
-	
-	// const brand = await prisma.brand.upsert({
-	// 	where: { slug: 'lacoste-russia' },
-	// 	update: {}, // Оставляем пустым, если не требуется обновление
-	// 	create: {
-	// 		name: 'Lacoste Россия',
-	// 		slug: 'lacoste-russia',
-	// 		city: 'Москва',
-	// 		logoPath: '/uploads/brands/brand-1-logo.png',
-	// 		about:
-	// 			'Кстати, непосредственные участники технического прогресса формируют глобальную экономическую сеть и при этом — ограничены исключительно образом мышления...',
-	// 		category: {
-	// 			connect: {
-	// 				id: category.id,
-	// 			},
-	// 		},
-	// 		user: {
-	// 			connect: {
-	// 				id: 6,
-	// 			},
-	// 		},
-	// 	},
-	// })
+	const categories = [
+//   {
+//     name: 'Авто, мото',
+//     slug: 'avto-moto',
+//     smallImagePath: '/uploads/categories/category-1-small-image.png',
+//     bigImagePath: '/uploads/categories/category-1-big-image.png',
+//   },
+  {
+    name: 'Дом, дача, сад',
+    slug: 'dom-dacha-sad',
+    smallImagePath: '/uploads/categories/category-2-small-image.png',
+    bigImagePath: '/uploads/categories/category-2-big-image.png',
+  },
+  {
+    name: 'Животные и растения',
+    slug: 'jivotnie-i-rastenia',
+    smallImagePath: '/uploads/categories/category-3-small-image.png',
+    bigImagePath: '/uploads/categories/category-3-big-image.png',
+  },
+  {
+    name: 'Книги, канцелярия',
+    slug: 'knigi-kancelaria',
+    smallImagePath: '/uploads/categories/category-4-small-image.png',
+    bigImagePath: '/uploads/categories/category-4-big-image.png',
+  },
+  {
+    name: 'Косметика, гигиена',
+    slug: 'kosmetika-gigiena',
+    smallImagePath: '/uploads/categories/category-5-small-image.png',
+    bigImagePath: '/uploads/categories/category-5-big-image.png',
+  },
+  {
+    name: 'Мебель',
+    slug: 'mebel',
+    smallImagePath: '/uploads/categories/category-6-small-image.png',
+    bigImagePath: '/uploads/categories/category-6-big-image.png',
+  },
+  {
+    name: 'Медицина, здоровье',
+    slug: 'medicina-zdorovye',
+    smallImagePath: '/uploads/categories/category-7-small-image.png',
+    bigImagePath: '/uploads/categories/category-7-big-image.png',
+  },
+  {
+    name: 'Музыка, творчество, искусство',
+    slug: 'muzika-tvorchestvo-iskustvo',
+    smallImagePath: '/uploads/categories/category-8-small-image.png',
+    bigImagePath: '/uploads/categories/category-8-big-image.png',
+  },
+  {
+    name: 'Одежда, обувь, аксессуары',
+    slug: 'odejda-obuv-aksesuari',
+    smallImagePath: '/uploads/categories/category-9-small-image.png',
+    bigImagePath: '/uploads/categories/category-9-big-image.png',
+  },
+  {
+    name: 'Подарки, сувениры',
+    slug: 'podarki-suveniri',
+    smallImagePath: '/uploads/categories/category-10-small-image.png',
+    bigImagePath: '/uploads/categories/category-10-big-image.png',
+  },
+  {
+    name: 'Продукты питания, напитки',
+    slug: 'produkti-pitania-napitki',
+    smallImagePath: '/uploads/categories/category-11-small-image.png',
+    bigImagePath: '/uploads/categories/category-11-big-image.png',
+  },
+]
 
-	// const brand2 = await prisma.brand.upsert({
-	// 	where: { slug: 'lacoste-kazan' },
-	// 	update: {}, // Оставляем пустым, если не требуется обновление
-	// 	create: {
-	// 		name: 'Lcste Казань',
-	// 		slug: 'lacoste-kazan',
-	// 		city: 'Казань',
-	// 		logoPath: '/uploads/brands/brand-2-logo.png',
-	// 		about:
-	// 			'Кстати, непосредственные участники технического прогресса формируют глобальную экономическую сеть и при этом — ограничены исключительно образом мышления...',
-	// 		category: {
-	// 			connect: {
-	// 				id: category.id,
-	// 			},
-	// 		},
-	// 		user: {
-	// 			connect: {
-	// 				id: 7,
-	// 			},
-	// 		},
-	// 	},
-	// })
+await prisma.$transaction(
+  categories.map((category) =>
+    prisma.category.upsert({
+      where: { slug: category.slug },
+      update: {}, // No update operation needed, empty object
+      create: {
+        name: category.name,
+        slug: category.slug,
+        smallImagePath: category.smallImagePath,
+        bigImagePath: category.bigImagePath,
+      },
+    })
+  )
+)
+
+console.log('Categories seeded successfully!')
+
+
+	// Используем upsert для создания или обновления бренда
 
 	const brands = [
 		await prisma.brand.upsert({
@@ -164,6 +200,7 @@ const createProducts = async (quantity: number) => {
 					`/uploads/products/product-${i}-image-5.png`,
 					`/uploads/products/product-${i}-image-6.png`,
 				],
+				rating: 1,
 				// prices: {
 				// 	createMany: {
 				// 		data: [
