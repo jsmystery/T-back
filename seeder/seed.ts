@@ -1,4 +1,6 @@
 import { PrismaClient, Product } from '@prisma/client'
+import { AdvertisingType } from '../src/resources/advertising/enums/advertising-type.enum'
+
 import * as dotenv from 'dotenv'
 
 dotenv.config()
@@ -266,10 +268,72 @@ console.log('Categories seeded successfully!')
 	console.log(`Created ${products.length} products`)
 }
 
+const createAdvertisements = async () => {
+	const advertisements = [
+		{
+			id: 1,
+			bigImagePath: '/uploads/advertisements/advertising-4-big-image.png',
+			smallImagePath: '/uploads/advertisements/advertising-4-small-image.png',
+			url: '/',
+			alt: 'Реклама',
+			resolution: 550,
+			type: AdvertisingType.CARD, 
+			weekPrice: 1000,
+			monthPrice: 3000,
+		},
+		{
+			id: 2,
+			bigImagePath: '/uploads/advertisements/advertising-5-big-image.png',
+			smallImagePath: '/uploads/advertisements/advertising-5-small-image.png',
+			url: '/',
+			alt: 'Реклама',
+			resolution: 550,
+			type: AdvertisingType.CARD, 
+			weekPrice: 1200,
+			monthPrice: 3500,
+		},
+		{
+			id: 3,
+			bigImagePath: '/uploads/advertisements/advertising-6-big-image.png',
+			smallImagePath: '/uploads/advertisements/advertising-6-small-image.png',
+			url: '/',
+			alt: 'Реклама',
+			resolution: 550,
+			type: AdvertisingType.CARD, 
+			weekPrice: 1500,
+			monthPrice: 4000,
+		},
+	]
+
+	await prisma.$transaction(
+		advertisements.map((advertising) =>
+			prisma.advertising.upsert({
+				where: { id: advertising.id },
+				update: {}, // Оставляем пустым, если не требуется обновление
+				create: {
+					id: advertising.id,
+					bigImagePath: advertising.bigImagePath,
+					smallImagePath: advertising.smallImagePath,
+					url: advertising.url,
+					alt: advertising.alt,
+					resolution: advertising.resolution,
+					type: advertising.type,
+					weekPrice: advertising.weekPrice,
+					monthPrice: advertising.monthPrice,
+				},
+			})
+		)
+	)
+
+	console.log('Advertisements seeded successfully!')
+}
+
+
 async function main() {
 	console.log('Start seeding ...')
 	await createUsers();
 	await createProducts(20)
+	await createAdvertisements(); 
 }
 
 main()
