@@ -178,6 +178,50 @@ console.log('Categories seeded successfully!')
 				},
 			},
 		}),
+		await prisma.brand.upsert({
+			where: { slug: 'Fabric-13' },
+			update: {},
+			create: {
+				name: 'Fabric-13',
+				slug: 'fabric-13',
+				city: 'Москва',
+				logoPath: '/uploads/brands/brand-1.png',
+				about:
+					'Кстати, непосредственные участники технического прогресса формируют глобальную экономическую сеть и при этом — ограничены исключительно образом мышления...',
+				category: {
+					connect: {
+						id: category.id,
+					},
+				},
+				user: {
+					connect: {
+						id: 7,
+					},
+				},
+			},
+		}),
+		await prisma.brand.upsert({
+			where: { slug: 'Prime-kraft' },
+			update: {},
+			create: {
+				name: 'Prime Kraft',
+				slug: 'prime-kraft',
+				city: 'Москва',
+				logoPath: '/uploads/brands/brand-3.png',
+				about:
+					'Кстати, непосредственные участники технического прогресса формируют глобальную экономическую сеть и при этом — ограничены исключительно образом мышления...',
+				category: {
+					connect: {
+						id: category.id,
+					},
+				},
+				user: {
+					connect: {
+						id: 7,
+					},
+				},
+			},
+		}),
 	]
 
 
