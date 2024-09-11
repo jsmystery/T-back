@@ -247,28 +247,6 @@ console.log('Categories seeded successfully!')
 					`/uploads/products/product-${i}-image-6.png`,
 				],
 				rating: 1,
-				// prices: {
-				// 	createMany: {
-				// 		data: [
-				// 			{
-				// 				price: 2000,
-				// 				minQuantity: 2,
-				// 			},
-				// 			{
-				// 				price: 1000,
-				// 				minQuantity: 5,
-				// 			},
-				// 			{
-				// 				price: 800,
-				// 				minQuantity: 100,
-				// 			},
-				// 			{
-				// 				price: 500,
-				// 				minQuantity: 1000,
-				// 			},
-				// 		],
-				// 	},
-				// },
 				prices: {
 					createMany: {
 						data: [

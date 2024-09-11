@@ -133,7 +133,7 @@ export class ProductService {
 		}
 	}
 
-	async currentProduct(id: number, user: User) {
+	async currentProduct(id: number, user?: User) {
 		const product = await this.prisma.product.findUnique({
 			where: {
 				id,
@@ -168,13 +168,14 @@ export class ProductService {
 				slug: product.brand.slug,
 				city: '',
 				logoPath: product.brand.logoPath,
-				phone: product.brand.user.profile.phone,
-				whatsapp: product.brand.user.profile.whatsapp,
-				telegram: product.brand.user.profile.telegram,
+				// phone: product.brand.user.profile.phone,
+				// whatsapp: product.brand.user.profile.whatsapp,
+				// telegram: product.brand.user.profile.telegram,
 				rating: String(product.brand.rating),
-				isSubscribed: product.brand.subscribers.includes(user.profile.email),
-				isBrandOwner:
-					user.role === UserRole.PROVIDER && product.brand.userId === user.id,
+				isSubscribed:false,
+				//  product.brand.subscribers.includes(user.profile?.email),
+				isBrandOwner: false
+					// user.role === UserRole.PROVIDER && product.brand.userId === user.id,
 			},
 			views: product.views,
 			createdAt: dateFormat(product.createdAt, 'DD MMMM YYYY'),
