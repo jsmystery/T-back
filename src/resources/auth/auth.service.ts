@@ -74,7 +74,8 @@ export class AuthService {
 			expires: expiresIn,
 			path: '/',
 			secure: IS_PRODUCTION,
-			sameSite: 'none',
+			// sameSite: 'none',
+			sameSite: IS_PRODUCTION ? 'none' : 'lax',
 		})
 	}
 
@@ -94,7 +95,8 @@ export class AuthService {
 			expires: expiresIn,
 			secure: IS_PRODUCTION,
 			path: '/',
-			sameSite: 'none',
+			// sameSite: 'none',
+			sameSite: IS_PRODUCTION ? 'none' : 'lax',
 		})
 	}
 

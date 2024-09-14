@@ -28,9 +28,9 @@ export class ProductService {
 		const { createFilter, getSortFilter } = queryProductFilters()
 		const { perPage, skip } = this.paginationService.getPagination(input)
 		const filters = createFilter(input)
-		logger.log('filters');
-		logger.log(JSON.stringify(filters));
-		logger.log("getSortFilter" + JSON.stringify(getSortFilter(input)));
+		// logger.log('filters');
+		// logger.log(JSON.stringify(filters));
+		// logger.log("getSortFilter" + JSON.stringify(getSortFilter(input)));
 
 
 
