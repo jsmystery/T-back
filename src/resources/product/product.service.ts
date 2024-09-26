@@ -143,7 +143,7 @@ export class ProductService {
 
 		if (!product) throw new NotFoundException('Продукт не найден.')
 
-		console.log(product.brand.user.profile);
+		// console.log(product.brand.user.profile);
 		
 		return {
 			id: product.id,

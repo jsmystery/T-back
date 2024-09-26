@@ -90,7 +90,11 @@ export class BrandService {
 			},
 		})
 
+
 		if (!brand) throw new NotFoundException('Поставщик не найден.')
+
+		console.log(brand);
+		
 
 		return {
 			id: brand.id,
@@ -99,11 +103,11 @@ export class BrandService {
 			city: brand.city,
 			postedCount: brand._count.products,
 			rating: String(brand.rating),
-			// phone: brand.user.profile.phone,
-			// whatsapp: brand.user.profile.whatsapp,
-			// telegram: brand.user.profile.telegram,
+			phone: brand.user.profile.phone,
+			whatsapp: brand.user.profile.whatsapp,
+			telegram: brand.user.profile.telegram ?? null,
 			isSubscribed: false,
-			// brand.subscribers.includes(user.profile.email),
+			// isSubscribed: brand.subscribers.includes(user.profile.email),
 			isBrandOwner:false,
 				// user.role === UserRole.PROVIDER && brand.user.id === user.id,
 			about: brand.about,
