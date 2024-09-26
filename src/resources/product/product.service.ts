@@ -143,6 +143,8 @@ export class ProductService {
 
 		if (!product) throw new NotFoundException('Продукт не найден.')
 
+		console.log(product.brand.user.profile);
+		
 		return {
 			id: product.id,
 			name: product.name,
@@ -168,9 +170,9 @@ export class ProductService {
 				slug: product.brand.slug,
 				city: '',
 				logoPath: product.brand.logoPath,
-				// phone: product.brand.user.profile.phone,
-				// whatsapp: product.brand.user.profile.whatsapp,
-				// telegram: product.brand.user.profile.telegram,
+				phone: product.brand.user.profile.phone,
+				whatsapp: product.brand.user.profile.whatsapp,
+				telegram: product.brand.user.profile.telegram,
 				rating: String(product.brand.rating),
 				isSubscribed:false,
 				//  product.brand.subscribers.includes(user.profile?.email),
