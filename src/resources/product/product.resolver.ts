@@ -1,4 +1,4 @@
-import { Args, Int, Query, Resolver } from '@nestjs/graphql'
+import { Args, Int, Query, Resolver, Mutation } from '@nestjs/graphql'
 import { Auth } from '../auth/helpers/decorators/auth.decorator'
 import { Brand } from '../brand/entities/brand.entity'
 import { CurrentUser } from '../user/decorators/user.decorator'
@@ -32,5 +32,14 @@ export class ProductResolver {
 		@CurrentUser() user: User
 	) {
 		return this.productService.currentProduct(id, user)
+	}
+
+	@Auth()
+	@Mutation(() => Boolean, { name: 'deleteProduct' })
+	async deleteProduct(
+		@Args('id', { type: () => Int }) id: number, 
+		@CurrentUser('brand') { id: brandId }: Brand // Get the brand of the current user
+	) {
+		return this.productService.deleteProduct(id, brandId)
 	}
 }

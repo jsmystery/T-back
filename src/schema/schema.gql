@@ -170,6 +170,7 @@ input JwtAuthVerificationInput {
 
 type Mutation {
   balanceTopUp(data: YookassaInput!): YookassaPayment!
+  deleteProduct(id: Int!): Boolean!
   jwtConfirmation(data: JwtAuthConfirmationInput!): Boolean!
   jwtLogin(data: JwtAuthLoginInput!): SessionUserResponse!
   jwtReset(data: JwtAuthResetInput!): Boolean!

@@ -183,4 +183,30 @@ export class ProductService {
 			createdAt: dateFormat(product.createdAt, 'DD MMMM YYYY'),
 		} as Product
 	}
+
+
+
+	// New method to delete a product
+	async deleteProduct(id: number, brandId: number): Promise<boolean> {
+		const product = await this.prisma.product.findUnique({
+			where: { id },
+		})
+
+		// Check if product exists
+		if (!product) {
+			throw new NotFoundException('Продукт не найден.')
+		}
+
+		// Ensure that only the owner of the product's brand can delete it
+		if (product.brandId !== brandId) {
+			throw new NotFoundException('У вас нет прав для удаления этого продукта.') // Authorization check
+		}
+
+		// Delete the product
+		await this.prisma.product.delete({
+			where: { id },
+		})
+
+		return true // Return success
+	}
 }
