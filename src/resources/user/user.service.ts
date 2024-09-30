@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { userFullSelect } from './selects/user.select'
+import { UpdateUserInput } from './inputs/update-user.input' 
+
 
 @Injectable()
 export class UserService {
@@ -17,5 +19,22 @@ export class UserService {
 		if (!user) throw new NotFoundException('Пользователь не найден.')
 
 		return user
+	}
+
+	async updateUserProfile(id: number, input: UpdateUserInput) {
+		const { email, password, whatsapp, telegram, phone } = input // Highlight: Destructure the input values
+
+		await this.prisma.profile.update({
+			where: { userId: id },
+			data: {
+				email,
+				password,
+				whatsapp,
+				telegram,
+				phone,
+			},
+		})
+
+		return true // Highlight: Return success status
 	}
 }

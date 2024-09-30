@@ -178,6 +178,7 @@ type Mutation {
   logout: Boolean!
   placeOrder(data: OrderInput!): NestedOrder!
   telegramAuth(data: TelegramAuthInput!): SessionUserResponse!
+  updateUserProfile(input: UpdateUserInput!): Boolean!
 }
 
 type NestedBrand {
@@ -353,6 +354,14 @@ enum TariffType {
 input TelegramAuthInput {
   login: String!
   password: String!
+}
+
+input UpdateUserInput {
+  email: String
+  password: String
+  phone: String
+  telegram: String
+  whatsapp: String
 }
 
 enum UserRole {
