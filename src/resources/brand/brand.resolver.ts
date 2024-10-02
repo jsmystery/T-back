@@ -1,5 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { Auth } from '../auth/helpers/decorators/auth.decorator'
+import { UpdateBrandInput } from './input/update-brand.input'
 import { CurrentUser } from '../user/decorators/user.decorator'
 import { User } from '../user/entities/full/user.entity'
 import { UserRole } from '../user/enums/user-role.enum'
@@ -30,5 +31,15 @@ export class BrandResolver {
 	@Query(() => Account, { name: 'account' })
 	async getAccountBrand(@CurrentUser('id') userId: number) {
 		return this.brandService.byUserId(userId)
+	}
+
+
+	@Auth(UserRole.PROVIDER)
+	@Mutation(() => Brand)
+	async updateBrand(
+	  @Args('id') id: number, 
+	  @Args('input') input: UpdateBrandInput
+	): Promise<Brand> {
+	  return this.brandService.updateBrand(id, input)
 	}
 }

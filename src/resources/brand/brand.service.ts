@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
+import { UpdateBrandInput } from './input/update-brand.input'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { dateFormat } from 'src/utils/formats/date-format.util'
 import { queryBrandFilters } from 'src/utils/query/query-brand-filters.util'
@@ -162,4 +163,27 @@ export class BrandService {
 			categories,
 		} as Account
 	}
+
+
+	async updateBrand(id: number, input: UpdateBrandInput): Promise<any> {
+		const brand = await this.prisma.brand.findUnique({ where: { id } })
+		if (!brand) {
+		  throw new NotFoundException('Brand not found')
+		}
+  
+		return this.prisma.brand.update({
+		  where: { id },
+		  data: {
+			 name: input.name,
+			 city: input.city,
+			 about: input.about,
+		  },
+		  select: {
+			 id: true,
+			 name: true,
+			 city: true,
+			 about: true,
+		  },
+		})
+	 }
 }

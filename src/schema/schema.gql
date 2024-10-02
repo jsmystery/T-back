@@ -178,6 +178,7 @@ type Mutation {
   logout: Boolean!
   placeOrder(data: OrderInput!): NestedOrder!
   telegramAuth(data: TelegramAuthInput!): SessionUserResponse!
+  updateBrand(id: Float!, input: UpdateBrandInput!): Brand!
   updateUserProfile(input: UpdateUserInput!): Boolean!
 }
 
@@ -354,6 +355,12 @@ enum TariffType {
 input TelegramAuthInput {
   login: String!
   password: String!
+}
+
+input UpdateBrandInput {
+  about: String!
+  city: String!
+  name: String!
 }
 
 input UpdateUserInput {
