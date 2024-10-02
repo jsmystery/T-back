@@ -16,4 +16,7 @@ export class UpdateUserInput {
 
 	@Field({ nullable: true })
 	phone?: string // Highlight: Optional phone field
+
+   @Field({ nullable: true })
+	newPassword?: string
 }

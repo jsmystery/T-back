@@ -358,6 +358,7 @@ input TelegramAuthInput {
 
 input UpdateUserInput {
   email: String
+  newPassword: String
   password: String
   phone: String
   telegram: String
