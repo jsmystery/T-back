@@ -24,6 +24,9 @@ export class BrandCard extends Id {
 	@Field(() => String)
 	rating: string
 
+	@Field(() => String)
+	about?: string
+
 	@Field(() => Int)
 	reviewsCount: number
 

@@ -11,6 +11,7 @@ import { User } from '../user/entities/full/user.entity'
 import { UserRole } from '../user/enums/user-role.enum'
 import { Account, Brand, BrandCard } from './entities/brand.entity'
 import { BrandQueryInput } from './input/brand-query.input'
+import { CreateBrandInput } from './input/create-brand.input';
 import {
 	accountBrandSelect,
 	brandCardSelect,
@@ -185,5 +186,45 @@ export class BrandService {
 			 about: true,
 		  },
 		})
+	 }
+
+	 async createBrand(createBrandInput: CreateBrandInput, userId: number): Promise<any> {
+		const { name, slug, city, logoPath, about, subscribers, rating, balance, categoryId } = createBrandInput;
+  
+		return this.prisma.brand.create({
+		  data: {
+			 name,             // Brand name
+			 slug,             // Brand slug
+			 city,             // Brand city
+			 logoPath,         // Brand logo path
+			 about,            // Brand description
+			 subscribers,      // List of subscribers
+			 rating,           // Brand rating
+			 balance,          // Brand balance
+			 categoryId,       // Category ID
+			 userId,           // Set the userId from CurrentUser decorator as the brand owner
+			//  reviews: [],         // Empty reviews initially
+			//  postedCount: 0,      // Default postedCount
+			//  reviewsCount: 0      // Default reviewsCount
+		  },
+		  select: {
+			 id: true,
+			 name: true,
+			 slug: true,
+			 city: true,
+			 logoPath: true,
+			 about: true,
+			 subscribers: true,
+			 rating: true,
+			 balance: true,
+			 categoryId: true,
+			 userId: true,
+			 reviews: true,
+			//  postedCount: true,
+			//  reviewsCount: true,
+			 createdAt: true,
+			 updatedAt: true
+		  }
+		});
 	 }
 }
