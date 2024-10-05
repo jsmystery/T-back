@@ -189,19 +189,20 @@ export class BrandService {
 	 }
 
 	 async createBrand(createBrandInput: CreateBrandInput, userId: number): Promise<any> {
-		const { name, slug, city, logoPath, about, subscribers, rating, balance, categoryId } = createBrandInput;
+		const { name, slug, city, logoPath, about } = createBrandInput;
   
 		return this.prisma.brand.create({
 		  data: {
 			 name,             // Brand name
 			 slug,             // Brand slug
 			 city,             // Brand city
-			 logoPath,         // Brand logo path
+			 logoPath: '',         // Brand logo path
 			 about,            // Brand description
-			 subscribers,      // List of subscribers
-			 rating,           // Brand rating
-			 balance,          // Brand balance
-			 categoryId,       // Category ID
+			 subscribers: null,      // List of subscribers
+			 rating: 0,           // Brand rating
+			 balance: 0,          // Brand balance
+			 categoryId: 1,       // Category ID
+			//  createdAt: dateFormat(brand.createdAt, 'DD-MM-YYYY'),
 			 userId,           // Set the userId from CurrentUser decorator as the brand owner
 			//  reviews: [],         // Empty reviews initially
 			//  postedCount: 0,      // Default postedCount
