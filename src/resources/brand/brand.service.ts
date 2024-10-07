@@ -198,7 +198,7 @@ export class BrandService {
 			 city,             // Brand city
 			 logoPath: '',         // Brand logo path
 			 about,            // Brand description
-			 subscribers: null,      // List of subscribers
+			 subscribers: [],      // List of subscribers
 			 rating: 0,           // Brand rating
 			 balance: 0,          // Brand balance
 			 categoryId: 1,       // Category ID
