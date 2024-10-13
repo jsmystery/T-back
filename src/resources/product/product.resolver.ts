@@ -7,6 +7,7 @@ import { AllAnnouncements } from './entity/announcement.entity'
 import { AllProducts, Product } from './entity/product.entity'
 import { ProductQueryInput } from './inputs/product-query.input'
 import { ProductService } from './product.service'
+import { UpdateProductInput } from './inputs/update-product.input'
 
 @Resolver()
 export class ProductResolver {
@@ -42,4 +43,15 @@ export class ProductResolver {
 	) {
 		return this.productService.deleteProduct(id, brandId)
 	}
+
+
+	@Auth()
+	@Mutation(() => Product, { name: 'updateProduct' }) // Added
+	async updateProduct( // Added
+		@Args('id', { type: () => Int }) id: number, // Added
+		@Args('data') data: UpdateProductInput, // Added
+		@CurrentUser('brand') { id: brandId }: Brand // Added
+	) { // Added
+		return this.productService.updateProduct(id, data, brandId); // Added
+	} // Added
 }

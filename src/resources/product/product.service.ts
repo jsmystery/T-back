@@ -9,6 +9,7 @@ import { UserRole } from '../user/enums/user-role.enum'
 import { AnnouncementCard } from './entity/announcement.entity'
 import { Product, ProductCard } from './entity/product.entity'
 import { ProductQueryInput } from './inputs/product-query.input'
+import { UpdateProductInput } from './inputs/update-product.input'
 import { announcementCardSelect } from './selects/announcement.select'
 import { productCardSelect, productSelect } from './selects/product.select'
 import { Logger } from '@nestjs/common';
@@ -209,4 +210,31 @@ export class ProductService {
 
 		return true // Return success
 	}
+
+
+
+	async updateProduct(id: number, data: UpdateProductInput, brandId: number): Promise<any> { // Added
+		const product = await this.prisma.product.findUnique({
+			where: { id },
+		})
+
+		// Check if product exists
+		if (!product) {
+			throw new NotFoundException('Product not found.')
+		}
+
+		// Ensure that only the owner of the product's brand can update it
+		if (product.brandId !== brandId) {
+			throw new NotFoundException('You do not have permission to update this product.') // Added
+		}
+
+		// Update the product fields
+		return this.prisma.product.update({
+			where: { id }, // Find the product by ID
+			data: {
+			  name: data.name,   // Update the 'name' field
+			  about: data.about, // Update the 'about' field
+			},
+		 });
+	} // Added
 }

@@ -189,6 +189,7 @@ type Mutation {
   placeOrder(data: OrderInput!): NestedOrder!
   telegramAuth(data: TelegramAuthInput!): SessionUserResponse!
   updateBrand(id: Float!, input: UpdateBrandInput!): Brand!
+  updateProduct(data: UpdateProductInput!, id: Int!): Product!
   updateUserProfile(input: UpdateUserInput!): Boolean!
 }
 
@@ -371,6 +372,11 @@ input UpdateBrandInput {
   about: String!
   city: String!
   name: String!
+}
+
+input UpdateProductInput {
+  about: String
+  name: String
 }
 
 input UpdateUserInput {
