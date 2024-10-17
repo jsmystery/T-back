@@ -10,6 +10,7 @@ import { AnnouncementCard } from './entity/announcement.entity'
 import { Product, ProductCard } from './entity/product.entity'
 import { ProductQueryInput } from './inputs/product-query.input'
 import { UpdateProductInput } from './inputs/update-product.input'
+import { CreateProductInput } from './inputs/create-product.input'
 import { announcementCardSelect } from './selects/announcement.select'
 import { productCardSelect, productSelect } from './selects/product.select'
 import { Logger } from '@nestjs/common';
@@ -143,8 +144,6 @@ export class ProductService {
 		})
 
 		if (!product) throw new NotFoundException('Продукт не найден.')
-
-		// console.log(product.brand.user.profile);
 		
 		return {
 			id: product.id,
@@ -236,5 +235,38 @@ export class ProductService {
 			  about: data.about, // Update the 'about' field
 			},
 		 });
-	} // Added
+	}
+
+	async createProduct(createProductInput: CreateProductInput, brandId: number): Promise<any> {
+		const { name, about } = createProductInput;
+	 
+		return this.prisma.product.create({
+		  data: {
+			 name,        // Product name
+			 about,       // Product description
+			 brandId,     // Brand ID from CurrentUser
+			 categoryId:  1,
+			 sku:  '000',
+			 rating:  0,
+			 views:  0,
+			 posterPath:  '',
+			 imagesPaths: []
+		  },
+		  select: {
+			 id: true,
+			 name: true,
+			 about: true,
+			 sku: true,
+			 posterPath: true,
+			 imagesPaths: true,
+			 rating: true,
+			 views: true,
+			 brandId: true,
+			 categoryId: true,
+			 createdAt: true,
+			 updatedAt: true,
+		  },
+		});
+	 }
+	 
 }

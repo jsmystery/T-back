@@ -8,6 +8,8 @@ import { AllProducts, Product } from './entity/product.entity'
 import { ProductQueryInput } from './inputs/product-query.input'
 import { ProductService } from './product.service'
 import { UpdateProductInput } from './inputs/update-product.input'
+import { CreateProductInput } from './inputs/create-product.input'
+
 
 @Resolver()
 export class ProductResolver {
@@ -46,12 +48,23 @@ export class ProductResolver {
 
 
 	@Auth()
-	@Mutation(() => Product, { name: 'updateProduct' }) // Added
-	async updateProduct( // Added
-		@Args('id', { type: () => Int }) id: number, // Added
-		@Args('data') data: UpdateProductInput, // Added
-		@CurrentUser('brand') { id: brandId }: Brand // Added
-	) { // Added
-		return this.productService.updateProduct(id, data, brandId); // Added
-	} // Added
+	@Mutation(() => Product, { name: 'updateProduct' }) 
+	async updateProduct( 
+		@Args('id', { type: () => Int }) id: number, 
+		@Args('data') data: UpdateProductInput, 
+		@CurrentUser('brand') { id: brandId }: Brand 
+	) { 
+		return this.productService.updateProduct(id, data, brandId); 
+	} 
+
+
+	@Auth()
+	@Mutation(() => Boolean, { name: 'createProduct' })  // New mutation for product creation
+	async createProduct(
+		@Args('input') input: CreateProductInput, 
+		@CurrentUser('brand') { id: brandId }: Brand  // Ensuring the user has a brand
+	): Promise<any> {
+		return this.productService.createProduct(input, brandId)  // Passing data to the service
+	}
+
 }

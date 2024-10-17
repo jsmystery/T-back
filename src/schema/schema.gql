@@ -148,6 +148,11 @@ input CreateBrandInput {
   slug: String!
 }
 
+input CreateProductInput {
+  about: String!
+  name: String!
+}
+
 input FullestQueryInput {
   page: Int
   perPage: Int
@@ -180,6 +185,7 @@ input JwtAuthVerificationInput {
 type Mutation {
   balanceTopUp(data: YookassaInput!): YookassaPayment!
   createBrand(input: CreateBrandInput!): BrandCard!
+  createProduct(input: CreateProductInput!): Boolean!
   deleteProduct(id: Int!): Boolean!
   jwtConfirmation(data: JwtAuthConfirmationInput!): Boolean!
   jwtLogin(data: JwtAuthLoginInput!): SessionUserResponse!
