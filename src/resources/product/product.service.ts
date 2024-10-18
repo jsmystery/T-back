@@ -227,7 +227,6 @@ export class ProductService {
 			throw new NotFoundException('You do not have permission to update this product.') // Added
 		}
 
-		// Update the product fields
 		return this.prisma.product.update({
 			where: { id }, // Find the product by ID
 			data: {
@@ -240,17 +239,18 @@ export class ProductService {
 	async createProduct(createProductInput: CreateProductInput, brandId: number): Promise<any> {
 		const { name, about } = createProductInput;
 	 
-		return this.prisma.product.create({
+		await this.prisma.product.create({
 		  data: {
 			 name,        // Product name
 			 about,       // Product description
 			 brandId,     // Brand ID from CurrentUser
 			 categoryId:  1,
-			 sku:  '000',
-			 rating:  0,
+			 sku:  Math.random().toString().slice(2, 13),
+			 rating:  1,
 			 views:  0,
-			 posterPath:  '',
-			 imagesPaths: []
+			 posterPath:  '/uploads/products/product-0-poster.png',
+			 videoPath:  '/uploads/products/product-17-video.mp4',
+			 imagesPaths: ["/uploads/products/product-17-image-1.png","/uploads/products/product-17-image-2.png"]
 		  },
 		  select: {
 			 id: true,
@@ -267,6 +267,8 @@ export class ProductService {
 			 updatedAt: true,
 		  },
 		});
+
+		return true 
 	 }
 	 
 }

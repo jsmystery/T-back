@@ -59,7 +59,7 @@ export class ProductResolver {
 
 
 	@Auth()
-	@Mutation(() => Boolean, { name: 'createProduct' })  // New mutation for product creation
+	@Mutation(() => Boolean, { name: 'createProduct' })
 	async createProduct(
 		@Args('input') input: CreateProductInput, 
 		@CurrentUser('brand') { id: brandId }: Brand  // Ensuring the user has a brand
