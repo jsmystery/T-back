@@ -7,4 +7,10 @@ export class UpdateProductInput {
 
 	@Field(() => String, { nullable: true })
 	about?: string  
+
+   @Field(() => Number)
+   price: number;
+ 
+   @Field(() => Number)
+   minQuantity: number;
 }

@@ -384,7 +384,9 @@ input UpdateBrandInput {
 
 input UpdateProductInput {
   about: String
+  minQuantity: Float!
   name: String
+  price: Float!
 }
 
 input UpdateUserInput {

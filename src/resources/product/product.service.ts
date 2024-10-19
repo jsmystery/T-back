@@ -207,7 +207,7 @@ export class ProductService {
 			where: { id },
 		})
 
-		return true // Return success
+		return true
 	}
 
 
@@ -217,7 +217,6 @@ export class ProductService {
 			where: { id },
 		})
 
-		// Check if product exists
 		if (!product) {
 			throw new NotFoundException('Product not found.')
 		}
@@ -227,11 +226,35 @@ export class ProductService {
 			throw new NotFoundException('You do not have permission to update this product.')  
 		}
 
+		const price = await this.prisma.price.findFirst({
+			where: { productId: id }, // Assuming price is linked to product by productId
+		})
+
+		if (!price) {
+			throw new NotFoundException('Price not found for this product.')
+		}
+
+		await this.prisma.price.update({
+			where: { id: price.id }, // Use the price ID to update the row
+			data: {
+				minQuantity: data.minQuantity,   
+				price: data.price,
+			},
+		});
+
+		//  this.prisma.price.update({
+		// 	where: { productId: id }, // Find the product by ID
+		// 	data: {
+		// 		minQuantity: data.minQuantity,   
+		// 		price: data.price,
+		// 	},
+		//  });
+
 		return this.prisma.product.update({
 			where: { id }, // Find the product by ID
 			data: {
-			  name: data.name,   // Update the 'name' field
-			  about: data.about, // Update the 'about' field
+			  name: data.name,   
+			  about: data.about,
 			},
 		 });
 	}
