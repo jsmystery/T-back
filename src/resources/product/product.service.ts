@@ -212,7 +212,7 @@ export class ProductService {
 
 
 
-	async updateProduct(id: number, data: UpdateProductInput, brandId: number): Promise<any> { // Added
+	async updateProduct(id: number, data: UpdateProductInput, brandId: number): Promise<any> {  
 		const product = await this.prisma.product.findUnique({
 			where: { id },
 		})
@@ -224,7 +224,7 @@ export class ProductService {
 
 		// Ensure that only the owner of the product's brand can update it
 		if (product.brandId !== brandId) {
-			throw new NotFoundException('You do not have permission to update this product.') // Added
+			throw new NotFoundException('You do not have permission to update this product.')  
 		}
 
 		return this.prisma.product.update({
@@ -237,9 +237,9 @@ export class ProductService {
 	}
 
 	async createProduct(createProductInput: CreateProductInput, brandId: number): Promise<any> {
-		const { name, about } = createProductInput;
+		const { name, about, price, minQuantity } = createProductInput;
 	 
-		await this.prisma.product.create({
+		const product = await this.prisma.product.create({ 
 		  data: {
 			 name,        // Product name
 			 about,       // Product description
@@ -266,6 +266,14 @@ export class ProductService {
 			 createdAt: true,
 			 updatedAt: true,
 		  },
+		});
+
+		await this.prisma.price.create({
+			data: {
+				minQuantity: minQuantity, // Minimum quantity for the price
+				price: price,     // Example price
+				productId: product.id,  // Link the price to the newly created product
+			},
 		});
 
 		return true 

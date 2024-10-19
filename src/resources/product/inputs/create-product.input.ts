@@ -8,6 +8,12 @@ export class CreateProductInput {
   @Field(() => String)
   about: string;
 
+  @Field(() => Number)
+  price: number;
+
+  @Field(() => Number)
+  minQuantity: number;
+
 //   @Field(() => Int)
 //   brandId: number;
 

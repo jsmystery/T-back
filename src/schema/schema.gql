@@ -150,7 +150,9 @@ input CreateBrandInput {
 
 input CreateProductInput {
   about: String!
+  minQuantity: Float!
   name: String!
+  price: Float!
 }
 
 input FullestQueryInput {
