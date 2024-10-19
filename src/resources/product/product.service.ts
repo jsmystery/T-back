@@ -99,6 +99,7 @@ export class ProductService {
 				id: product.id,
 				name: product.name,
 				posterPath: product.posterPath,
+				about: product.about,
 				minPrice,
 				maxPrice,
 				city: product.brand.city,
@@ -242,13 +243,6 @@ export class ProductService {
 			},
 		});
 
-		//  this.prisma.price.update({
-		// 	where: { productId: id }, // Find the product by ID
-		// 	data: {
-		// 		minQuantity: data.minQuantity,   
-		// 		price: data.price,
-		// 	},
-		//  });
 
 		return this.prisma.product.update({
 			where: { id }, // Find the product by ID
@@ -264,8 +258,8 @@ export class ProductService {
 	 
 		const product = await this.prisma.product.create({ 
 		  data: {
-			 name,        // Product name
-			 about,       // Product description
+			 name,        
+			 about,       
 			 brandId,     // Brand ID from CurrentUser
 			 categoryId:  1,
 			 sku:  Math.random().toString().slice(2, 13),

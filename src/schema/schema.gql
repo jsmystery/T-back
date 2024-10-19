@@ -74,6 +74,7 @@ type AllReviews {
 }
 
 type AnnouncementCard {
+  about: String!
   city: String!
   createdAt: String!
   id: Int!

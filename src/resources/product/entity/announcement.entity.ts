@@ -24,6 +24,9 @@ export class AnnouncementCard extends Id {
 	@Field(() => String)
 	sku: string
 
+	@Field(() => String)
+	about?: string
+
 	@Field(() => Int)
 	views: number
 

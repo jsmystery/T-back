@@ -6,6 +6,7 @@ export const announcementCardSelect = {
 	name: true,
 	posterPath: true,
 	sku: true,
+	about: true,
 	prices: {
 		select: {
 			price: true,
