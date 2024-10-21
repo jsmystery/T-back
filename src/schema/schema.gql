@@ -83,6 +83,7 @@ type AnnouncementCard {
   name: String!
   orders: [NestedOrder!]!
   posterPath: String!
+  price: Int!
   sku: String!
   views: Int!
 }

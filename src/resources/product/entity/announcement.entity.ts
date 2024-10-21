@@ -18,6 +18,9 @@ export class AnnouncementCard extends Id {
 	@Field(() => Int)
 	maxPrice: number
 
+	@Field(() => Int)
+	price?: number
+
 	@Field(() => String)
 	posterPath: string
 
