@@ -91,7 +91,10 @@ export class ProductService {
 		])
 
 		const announcements = queriedAnnouncements.map((product) => {
+			console.log(product.prices);
+			
 			const prices = product.prices.map((item) => item.price)
+			const pricesFull = product.prices
 			const minPrice = Math.min(...prices)
 			const maxPrice = Math.max(...prices)
 
@@ -102,6 +105,7 @@ export class ProductService {
 				about: product.about,
 				minPrice,
 				maxPrice,
+				pricesFull:pricesFull,
 				city: product.brand.city,
 				sku: product.sku,
 				views: product.views,

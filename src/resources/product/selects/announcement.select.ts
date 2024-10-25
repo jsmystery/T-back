@@ -10,6 +10,7 @@ export const announcementCardSelect = {
 	prices: {
 		select: {
 			price: true,
+			minQuantity: true,
 		},
 	},
 	brand: {

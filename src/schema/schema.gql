@@ -84,6 +84,7 @@ type AnnouncementCard {
   orders: [NestedOrder!]!
   posterPath: String!
   price: Int!
+  pricesFull: [Price!]!
   sku: String!
   views: Int!
 }

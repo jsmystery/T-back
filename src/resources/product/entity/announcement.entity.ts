@@ -27,8 +27,14 @@ export class AnnouncementCard extends Id {
 	@Field(() => String)
 	sku: string
 
-	@Field(() => String)
+	@Field(() => String)  
 	about?: string
+
+ 
+
+	@Field(() => [Price])
+	pricesFull: Price[];
+ 
 
 	@Field(() => Int)
 	views: number
@@ -63,6 +69,9 @@ export class Announcement {
 	@Field(() => String)
 	posterPath: string
 
+	// @Field(() => Number)
+	// minQuantity: number
+
 	@Field(() => String)
 	videoPath: string
 
@@ -71,6 +80,9 @@ export class Announcement {
 
 	@Field(() => [Price])
 	prices: Price[]
+
+	// @Field(() => [])
+	// pricesFull?: []
 
 	@Field(() => SelectCategory)
 	category: SelectCategory
