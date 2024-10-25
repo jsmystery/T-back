@@ -14,6 +14,18 @@ export class CreateProductInput {
   @Field(() => Number)
   minQuantity: number;
 
+  @Field(() => Number, { nullable: true })
+  price2?: number;
+
+  @Field(() => Number, { nullable: true })
+  minQuantity2?: number;
+
+  @Field(() => Number, { nullable: true })
+  price3?: number;
+
+  @Field(() => Number, { nullable: true })
+  minQuantity3?: number;
+
 //   @Field(() => Int)
 //   brandId: number;
 

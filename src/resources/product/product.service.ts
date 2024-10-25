@@ -254,7 +254,7 @@ export class ProductService {
 	}
 
 	async createProduct(createProductInput: CreateProductInput, brandId: number): Promise<any> {
-		const { name, about, price, minQuantity } = createProductInput;
+		const { name, about, price, minQuantity, price2, minQuantity2, price3, minQuantity3 } = createProductInput;
 	 
 		const product = await this.prisma.product.create({ 
 		  data: {
@@ -287,11 +287,34 @@ export class ProductService {
 
 		await this.prisma.price.create({
 			data: {
-				minQuantity: minQuantity, // Minimum quantity for the price
-				price: price,     // Example price
-				productId: product.id,  // Link the price to the newly created product
+				minQuantity: minQuantity, 
+				price: price,     
+				productId: product.id, 
 			},
 		});
+
+		// Optionally create the second price entry if price2 is provided
+		if (price2 && minQuantity2) {
+			await this.prisma.price.create({
+			  data: {
+				 minQuantity: minQuantity2,
+				 price: price2,
+				 productId: product.id,
+			  },
+			});
+		 }
+	  
+		 // Optionally create the third price entry if price3 is provided
+		 if (price3 && minQuantity3) {
+			await this.prisma.price.create({
+			  data: {
+				 minQuantity: minQuantity3,
+				 price: price3,
+				 productId: product.id, 
+			  },
+			});
+		 }
+	  
 
 		return true 
 	 }
