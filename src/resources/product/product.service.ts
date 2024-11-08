@@ -101,6 +101,7 @@ export class ProductService {
 			return {
 				id: product.id,
 				name: product.name,
+				rating: String(product.rating),
 				posterPath: product.posterPath,
 				about: product.about,
 				minPrice,

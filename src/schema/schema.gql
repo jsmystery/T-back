@@ -85,6 +85,7 @@ type AnnouncementCard {
   posterPath: String!
   price: Int!
   pricesFull: [Price!]!
+  rating: String!
   sku: String!
   views: Int!
 }

@@ -30,7 +30,10 @@ export class AnnouncementCard extends Id {
 	@Field(() => String)  
 	about?: string
 
- 
+
+	@Field(() => String)
+	rating?: string
+
 
 	@Field(() => [Price])
 	pricesFull: Price[];

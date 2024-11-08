@@ -22,6 +22,7 @@ export const announcementCardSelect = {
 		select: nestedOrderSelect,
 	},
 	views: true,
+	rating: true,
 	createdAt: true,
 }
 
