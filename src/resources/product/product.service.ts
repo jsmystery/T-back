@@ -91,7 +91,78 @@ export class ProductService {
 		])
 
 		const announcements = queriedAnnouncements.map((product) => {
-			console.log(product.prices);
+			// console.log(product.prices);
+			
+			const prices = product.prices.map((item) => item.price)
+			const pricesFull = product.prices
+			const minPrice = Math.min(...prices)
+			const maxPrice = Math.max(...prices)
+
+			return {
+				id: product.id,
+				name: product.name,
+				rating: String(product.rating),
+				posterPath: product.posterPath,
+				about: product.about,
+				minPrice,
+				maxPrice,
+				pricesFull:pricesFull,
+				city: product.brand.city,
+				sku: product.sku,
+				views: product.views,
+				createdAt: dateFormat(product.createdAt, 'DD MMMM YYYY'),
+				orders: product.orders.map((order) => {
+					let data = {}
+
+					if (order.expirationAt) {
+						const now = new Date()
+						const timeDifference = order.expirationAt.getTime() - now.getTime()
+						const isLittleLeft = timeDifference < 24 * 60 * 60 * 1000
+
+						data = {
+							expirationDate: dateFormat(order.expirationAt, 'DD.MM HH:mm'),
+							isLittleLeft,
+						}
+					}
+
+					return {
+						...data,
+						tariff: {
+							type: order.tariff.type,
+						},
+					} as NestedOrder
+				}),
+			}
+		}) as AnnouncementCard[]
+
+		return {
+			announcements: announcements || [],
+			count: count || 0,
+		}
+	}
+
+	async getAllAnnouncementsAdmin(input: ProductQueryInput) {
+		const brandId = input.brandId
+		const { createFilter, getSortFilter } = queryProductFilters()
+		const { perPage, skip } = this.paginationService.getPagination(input)
+		const filters = createFilter({
+			...input,
+			brandId,
+		})
+
+		const [queriedAnnouncements, count] = await Promise.all([
+			this.prisma.product.findMany({
+				where: filters,
+				orderBy: getSortFilter(input),
+				skip,
+				take: perPage,
+				select: announcementCardSelect,
+			}),
+			this.prisma.product.count({ where: filters }),
+		])
+
+		const announcements = queriedAnnouncements.map((product) => {
+			// console.log(product.prices);
 			
 			const prices = product.prices.map((item) => item.price)
 			const pricesFull = product.prices

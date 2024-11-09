@@ -4,6 +4,7 @@ import { Brand } from '../brand/entities/brand.entity'
 import { CurrentUser } from '../user/decorators/user.decorator'
 import { User } from '../user/entities/full/user.entity'
 import { AllAnnouncements } from './entity/announcement.entity'
+import { AllAnnouncementsAdmin } from './entity/announcementAdmin.entity'
 import { AllProducts, Product } from './entity/product.entity'
 import { ProductQueryInput } from './inputs/product-query.input'
 import { ProductService } from './product.service'
@@ -24,9 +25,19 @@ export class ProductResolver {
 	@Query(() => AllAnnouncements, { name: 'announcements' })
 	async getAllAnnouncements(
 		@Args('query') input: ProductQueryInput,
-		@CurrentUser('brand') { id }: Brand
+		@CurrentUser('brand') { id }: Brand		
 	) {
 		return this.productService.getAllAnnouncements(input, id)
+	}
+
+	@Auth()
+	@Query(() => AllAnnouncementsAdmin, { name: 'announcementsAdmin' })
+	async getAllAnnouncementsAdmin(
+		@Args('query') input: ProductQueryInput,
+		// @CurrentUser('brand') { id }: Brand
+	) {
+		console.log(input.brandId);
+		return this.productService.getAllAnnouncementsAdmin(input)
 	}
 
 	@Query(() => Product, { name: 'currentProduct' })
@@ -42,6 +53,15 @@ export class ProductResolver {
 	async deleteProduct(
 		@Args('id', { type: () => Int }) id: number, 
 		@CurrentUser('brand') { id: brandId }: Brand // Get the brand of the current user
+	) {
+		return this.productService.deleteProduct(id, brandId)
+	}
+
+	@Auth()
+	@Mutation(() => Boolean, { name: 'deleteProductAdmin' })
+	async deleteProductAdmin(
+		@Args('id', { type: () => Int }) id: number, 
+		@Args('brandId', { type: () => Int }) brandId: number Э, 
 	) {
 		return this.productService.deleteProduct(id, brandId)
 	}
