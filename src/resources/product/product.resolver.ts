@@ -9,6 +9,7 @@ import { AllProducts, Product } from './entity/product.entity'
 import { ProductQueryInput } from './inputs/product-query.input'
 import { ProductService } from './product.service'
 import { UpdateProductInput } from './inputs/update-product.input'
+import { UpdateProductInputAdmin } from './inputs/update-product-admin.input'
 import { CreateProductInput } from './inputs/create-product.input'
 
 
@@ -61,7 +62,7 @@ export class ProductResolver {
 	@Mutation(() => Boolean, { name: 'deleteProductAdmin' })
 	async deleteProductAdmin(
 		@Args('id', { type: () => Int }) id: number, 
-		@Args('brandId', { type: () => Int }) brandId: number Э, 
+		@Args('brandId', { type: () => Int }) brandId: number, 
 	) {
 		return this.productService.deleteProduct(id, brandId)
 	}
@@ -75,6 +76,17 @@ export class ProductResolver {
 		@CurrentUser('brand') { id: brandId }: Brand 
 	) { 
 		return this.productService.updateProduct(id, data, brandId); 
+	} 
+
+	@Auth()
+	@Mutation(() => Product, { name: 'updateProductAdmin' }) 
+	async updateProductAdmin( 
+		@Args('id', { type: () => Int }) id: number, 
+		@Args('data') data: UpdateProductInputAdmin, 
+		@Args('brandId', { type: () => Int }) brandId: number, 
+		// @CurrentUser('brand') { id: brandId }: Brand 
+	) { 
+		return this.productService.updateProductAdmin(id, data, brandId); 
 	} 
 
 
