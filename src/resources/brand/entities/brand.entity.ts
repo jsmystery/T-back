@@ -24,8 +24,8 @@ export class BrandCard extends Id {
 	@Field(() => String)
 	rating: string
 
-	@Field(() => String)
-	about?: string
+	@Field(() => String, { nullable: true })
+	about?: string="";
 
 	@Field(() => Int)
 	reviewsCount: number
@@ -56,6 +56,9 @@ export class NestedBrand {
 
 	@Field(() => String)
 	logoPath: string
+
+	@Field(() => String, { nullable: true })
+	about?: string="";
 }
 
 @ObjectType()
@@ -89,6 +92,9 @@ export class NestedProductBrand extends NestedBrand {
 
 	@Field(() => Boolean)
 	isBrandOwner: boolean
+
+	@Field(() => String, { nullable: true })
+	about?: string="";
 }
 
 @ObjectType()
@@ -123,8 +129,8 @@ export class Brand extends Id {
 	@Field(() => Boolean)
 	isBrandOwner: boolean
 
-	@Field(() => String)
-	about: string
+	@Field(() => String, { nullable: true })
+	about: string="";
 
 	@Field(() => [ReviewCard])
 	reviews: ReviewCard[]
@@ -141,8 +147,8 @@ export class AccountBrand extends Id {
 	@Field(() => String)
 	name: string
 
-	@Field(() => String)
-	about: string
+	@Field(() => String, { nullable: true })
+	about: string="";
 
 	@Field(() => Int)
 	balance: number

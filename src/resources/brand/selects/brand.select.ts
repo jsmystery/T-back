@@ -25,6 +25,7 @@ export const brandNestedSelect = {
 	name: true,
 	slug: true,
 	city:true,
+	about: true,
 	logoPath: true,
 }
 
@@ -36,6 +37,8 @@ export const productBrandNestedSelect = {
 	rating: true,
 	subscribers: true,
 	userId: true,
+	about: true,
+	city: true,
 	user: {
 		select: {
 			profile: {
@@ -55,6 +58,7 @@ export const brandCardSelect = {
 	slug: true,
 	logoPath: true,
 	city: true,
+	about: true,
 	rating: true,
 	_count: {
 		select: {

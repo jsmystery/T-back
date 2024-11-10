@@ -9,7 +9,7 @@ type Account {
 }
 
 type AccountBrand {
-  about: String!
+  about: String
   balance: Int!
   category: SelectCategory!
   city: String!
@@ -113,7 +113,7 @@ type AnnouncementCardAdmin {
 }
 
 type Brand {
-  about: String!
+  about: String
   city: String!
   createdAt: String!
   id: Int!
@@ -131,7 +131,7 @@ type Brand {
 }
 
 type BrandCard {
-  about: String!
+  about: String
   category: NestedCategory!
   city: String!
   id: Int!
@@ -234,6 +234,7 @@ type Mutation {
 }
 
 type NestedBrand {
+  about: String
   city: String!
   logoPath: String!
   name: String!
@@ -252,6 +253,7 @@ type NestedOrder {
 }
 
 type NestedProductBrand {
+  about: String
   city: String!
   id: Int!
   isBrandOwner: Boolean!

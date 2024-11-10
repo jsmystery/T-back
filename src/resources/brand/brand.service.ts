@@ -49,6 +49,8 @@ export class BrandService {
 			return {
 				id: brand.id,
 				name: brand.name,
+				about: brand.about,
+				city: brand.city,
 				slug: brand.slug,
 				logoPath: brand.logoPath,
 				rating: String(brand.rating),
