@@ -79,7 +79,7 @@ export class ProductResolver {
 	} 
 
 	@Auth()
-	@Mutation(() => Product, { name: 'updateProductAdmin' }) 
+	@Mutation(() => Boolean, { name: 'updateProductAdmin' }) 
 	async updateProductAdmin( 
 		@Args('id', { type: () => Int }) id: number, 
 		@Args('data') data: UpdateProductInputAdmin, 

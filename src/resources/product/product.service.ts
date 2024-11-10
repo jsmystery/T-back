@@ -384,7 +384,7 @@ export class ProductService {
 	}
 	
 
-	async updateProductAdmin(id: number, data: UpdateProductInput, brandId: number): Promise<any> {
+	async updateProductAdmin(id: number, data: UpdateProductInputAdmin, brandId: number): Promise<any> {
 		const product = await this.prisma.product.findUnique({
 			where: { id },
 		});
@@ -393,79 +393,79 @@ export class ProductService {
 			throw new NotFoundException('Product not found.');
 		}
 	
-		// Ensure that only the owner of the product's brand can update it
-		if (product.brandId !== brandId) {
-			throw new NotFoundException('You do not have permission to update this product.');
-		}
+		// // Ensure that only the owner of the product's brand can update it
+		// if (product.brandId !== brandId) {
+		// 	throw new NotFoundException('You do not have permission to update this product.');
+		// }
 	
 		// Retrieve all price entries for the product
-		const prices = await this.prisma.price.findMany({
-			where: { productId: id },
-			orderBy: { id: 'asc' }, // Keep the oldest prices first
-		});
+		// const prices = await this.prisma.price.findMany({
+		// 	where: { productId: id },
+		// 	orderBy: { id: 'asc' }, // Keep the oldest prices first
+		// });
 	
 		// Update or create the first price
-		await this.prisma.price.update({
-			where: { id: prices[0].id },
-			data: {
-				minQuantity: data.minQuantity,
-				price: data.price,
-			},
-		});
+		// await this.prisma.price.update({
+		// 	where: { id: prices[0].id },
+		// 	data: {
+		// 		minQuantity: data.minQuantity,
+		// 		price: data.price,
+		// 	},
+		// });
 	
 		// Update or create the second price
-		if (data.price2 && data.minQuantity2) {
-			if (prices[1]) {
-				// Update existing second price
-				await this.prisma.price.update({
-					where: { id: prices[1].id },
-					data: {
-						minQuantity: data.minQuantity2,
-						price: data.price2,
-					},
-				});
-			} else {
-				// Create new second price if it doesn't exist
-				await this.prisma.price.create({
-					data: {
-						minQuantity: data.minQuantity2,
-						price: data.price2,
-						productId: product.id,
-					},
-				});
-			}
-		}
+		// if (data.price2 && data.minQuantity2) {
+		// 	if (prices[1]) {
+		// 		// Update existing second price
+		// 		await this.prisma.price.update({
+		// 			where: { id: prices[1].id },
+		// 			data: {
+		// 				minQuantity: data.minQuantity2,
+		// 				price: data.price2,
+		// 			},
+		// 		});
+		// 	} else {
+		// 		// Create new second price if it doesn't exist
+		// 		await this.prisma.price.create({
+		// 			data: {
+		// 				minQuantity: data.minQuantity2,
+		// 				price: data.price2,
+		// 				productId: product.id,
+		// 			},
+		// 		});
+		// 	}
+		// }
 	
 		// Update or create the third price
-		if (data.price3 && data.minQuantity3) {
-			if (prices[2]) {
-				// Update existing third price
-				await this.prisma.price.update({
-					where: { id: prices[2].id },
-					data: {
-						minQuantity: data.minQuantity3,
-						price: data.price3,
-					},
-				});
-			} else {
-				// Create new third price if it doesn't exist
-				await this.prisma.price.create({
-					data: {
-						minQuantity: data.minQuantity3,
-						price: data.price3,
-						productId: product.id,
-					},
-				});
-			}
-		}
+		// if (data.price3 && data.minQuantity3) {
+		// 	if (prices[2]) {
+		// 		// Update existing third price
+		// 		await this.prisma.price.update({
+		// 			where: { id: prices[2].id },
+		// 			data: {
+		// 				minQuantity: data.minQuantity3,
+		// 				price: data.price3,
+		// 			},
+		// 		});
+		// 	} else {
+		// 		// Create new third price if it doesn't exist
+		// 		await this.prisma.price.create({
+		// 			data: {
+		// 				minQuantity: data.minQuantity3,
+		// 				price: data.price3,
+		// 				productId: product.id,
+		// 			},
+		// 		});
+		// 	}
+		// }
 	
 		// Delete any extra prices if there are more than three
-		if (prices.length > 3) {
-			const extraPrices = prices.slice(3);
-			await this.prisma.price.deleteMany({
-				where: { id: { in: extraPrices.map(price => price.id) } },
-			});
-		}
+		// if (prices.length > 3) {
+		// 	const extraPrices = prices.slice(3);
+		// 	await this.prisma.price.deleteMany({
+		// 		where: { id: { in: extraPrices.map(price => price.id) } },
+		// 	});
+		// }
 	
 		// Update the product information
 		return this.prisma.product.update({
@@ -473,6 +473,8 @@ export class ProductService {
 			data: {
 				name: data.name,
 				about: data.about,
+				posterPath: data.posterPath,
+				imagesPaths: data.imagesPaths
 			},
 		});
 	}
