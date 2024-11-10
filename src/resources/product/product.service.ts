@@ -467,7 +467,6 @@ export class ProductService {
 		// 	});
 		// }
 	
-		// Update the product information
 		return this.prisma.product.update({
 			where: { id },
 			data: {

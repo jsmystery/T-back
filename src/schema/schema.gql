@@ -229,7 +229,7 @@ type Mutation {
   telegramAuth(data: TelegramAuthInput!): SessionUserResponse!
   updateBrand(id: Float!, input: UpdateBrandInput!): Brand!
   updateProduct(data: UpdateProductInput!, id: Int!): Product!
-  updateProductAdmin(brandId: Int!, data: UpdateProductInputAdmin!, id: Int!): Boolean!
+  updateProductAdmin(brandId: Int!, data: UpdateProductInputAdmin!, id: Int!): Product!
   updateUserProfile(input: UpdateUserInput!): Boolean!
 }
 
