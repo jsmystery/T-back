@@ -126,6 +126,7 @@ type Brand {
   rating: String!
   reviews: [ReviewCard!]!
   reviewsCount: Int!
+  slug: String!
   telegram: String
   whatsapp: String
 }
@@ -228,6 +229,7 @@ type Mutation {
   placeOrder(data: OrderInput!): NestedOrder!
   telegramAuth(data: TelegramAuthInput!): SessionUserResponse!
   updateBrand(id: Float!, input: UpdateBrandInput!): Brand!
+  updateBrandAdmin(id: Float!, input: UpdateBrandInputAdmin!): Brand!
   updateProduct(data: UpdateProductInput!, id: Int!): Product!
   updateProductAdmin(brandId: Int!, data: UpdateProductInputAdmin!, id: Int!): Product!
   updateUserProfile(input: UpdateUserInput!): Boolean!
@@ -415,6 +417,14 @@ input UpdateBrandInput {
   about: String!
   city: String!
   name: String!
+}
+
+input UpdateBrandInputAdmin {
+  about: String!
+  city: String!
+  logoPath: String!
+  name: String!
+  slug: String!
 }
 
 input UpdateProductInput {

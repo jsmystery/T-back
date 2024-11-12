@@ -77,6 +77,7 @@ export const accountBrandSelect = {
 	about: true,
 	city: true,
 	balance: true,
+	slug: true,
 	subscribers: true,
 	user: {
 		select: {

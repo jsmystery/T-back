@@ -132,6 +132,9 @@ export class Brand extends Id {
 	@Field(() => String, { nullable: true })
 	about: string="";
 
+	@Field(() => String)
+	slug: string;
+
 	@Field(() => [ReviewCard])
 	reviews: ReviewCard[]
 
