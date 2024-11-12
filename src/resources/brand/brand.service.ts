@@ -258,4 +258,49 @@ export class BrandService {
 		  }
 		});
 	 }
+
+
+	 async deleteBrand(id: number): Promise<boolean> {
+		try {
+		  const brand = await this.prisma.brand.findUnique({
+			 where: { id },
+			 include: {
+				products: true,
+				reviews: true
+			 }
+		  });
+	 
+		  if (!brand) {
+			 throw new NotFoundException('Brand not found');
+		  }
+	 
+		  // Begin transaction to ensure all related data is deleted
+		  await this.prisma.$transaction(async (prisma) => {
+			 // Delete related products first
+			 if (brand.products.length > 0) {
+				await prisma.product.deleteMany({
+				  where: { brandId: id }
+				});
+			 }
+	 
+			 // Delete related reviews
+			 if (brand.reviews.length > 0) {
+				await prisma.review.deleteMany({
+				  where: { brandId: id }
+				});
+			 }
+	 
+			 // Finally delete the brand
+			 await prisma.brand.delete({
+				where: { id }
+			 });
+		  });
+	 
+		  return true;
+		} catch (error) {
+		  // Log the error appropriately in your logging system
+		  console.error('Error deleting brand:', error);
+		  throw new Error('Failed to delete brand');
+		}
+	 }
 }

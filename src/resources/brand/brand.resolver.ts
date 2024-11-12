@@ -67,4 +67,12 @@ export class BrandResolver {
 	): Promise<BrandCard> {
 	  return this.brandService.createBrand(input, userId);  // Pass the userId to the service
 	}
+
+	@Auth(UserRole.ADMIN)
+@Mutation(() => Boolean)
+async deleteBrand(
+  @Args('id') id: number
+): Promise<boolean> {
+  return this.brandService.deleteBrand(id);
+}
 }

@@ -219,6 +219,7 @@ type Mutation {
   balanceTopUp(data: YookassaInput!): YookassaPayment!
   createBrand(input: CreateBrandInput!): BrandCard!
   createProduct(input: CreateProductInput!): Boolean!
+  deleteBrand(id: Float!): Boolean!
   deleteProduct(id: Int!): Boolean!
   deleteProductAdmin(brandId: Int!, id: Int!): Boolean!
   jwtConfirmation(data: JwtAuthConfirmationInput!): Boolean!
