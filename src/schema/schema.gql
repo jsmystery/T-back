@@ -186,6 +186,11 @@ input CreateProductInput {
   price3: Float
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 input FullestQueryInput {
   page: Int
   perPage: Int
@@ -337,6 +342,7 @@ type Query {
   account: Account!
   advertisements(query: FullestQueryInput!): AllAdvertisements!
   advertisementsByTypes(types: [AdvertisingType!]!): [Advertising!]!
+  allUsers: [UserList!]!
   announcements(query: ProductQueryInput!): AllAnnouncements!
   announcementsAdmin(query: ProductQueryInput!): AllAnnouncementsAdmin!
   brand(slug: String!): Brand!
@@ -451,6 +457,17 @@ input UpdateUserInput {
   newPassword: String
   password: String
   phone: String
+  telegram: String
+  whatsapp: String
+}
+
+type UserList {
+  createdAt: DateTime!
+  email: String
+  id: Int!
+  login: String
+  phone: String
+  role: UserRole!
   telegram: String
   whatsapp: String
 }

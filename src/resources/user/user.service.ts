@@ -67,4 +67,24 @@ export class UserService {
 
 		return true // Return success status
 	}
+
+	async getAllUsers() {
+		return this.prisma.user.findMany({
+		  select: {
+			 id: true,
+			 createdAt: true,
+			 role: true,
+			 profile: {
+				select: {
+				  login: true,
+				  email: true,
+				  whatsapp: true,
+				  telegram: true,
+				  phone: true,
+				},
+			 },
+		  },
+		})
+	 }
+  
 }
