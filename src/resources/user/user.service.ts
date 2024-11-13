@@ -69,7 +69,7 @@ export class UserService {
 	}
 
 	async getAllUsers() {
-		return this.prisma.user.findMany({
+		const users = await this.prisma.user.findMany({
 		  select: {
 			 id: true,
 			 createdAt: true,
@@ -84,7 +84,19 @@ export class UserService {
 				},
 			 },
 		  },
-		})
+		});
+	 
+		// Flatten profile fields into the main object
+		return users.map(user => ({
+		  id: user.id,
+		  createdAt: user.createdAt,
+		  role: user.role,
+		  login: user.profile?.login,
+		  email: user.profile?.email,
+		  whatsapp: user.profile?.whatsapp,
+		  telegram: user.profile?.telegram,
+		  phone: user.profile?.phone,
+		}));
 	 }
-  
+	 
 }
