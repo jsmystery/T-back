@@ -5,6 +5,9 @@ import { SessionUser } from './entities/session/session-user.entity'
 import { UserList } from './entities/full/users.entity'
 import { UserService } from './user.service'
 import { UpdateUserInput } from './inputs/update-user.input'
+import { UpdateUserAdminInput } from './inputs/update-user-admin.input'
+import { UserRole } from '../user/enums/user-role.enum'
+
 
 @Resolver()
 export class UserResolver {
@@ -29,5 +32,13 @@ export class UserResolver {
     @CurrentUser('id') id: number
   ) {
     return this.userService.updateUserProfile(id, input)
+  }
+
+	@Auth(UserRole.ADMIN)
+  @Mutation(() => Boolean, { name: 'updateUserProfileAdmin' })
+  async updateUserProfileAdmin(
+    @Args('input') input: UpdateUserAdminInput
+  ) {
+    return this.userService.updateUserProfileAdmin(input)
   }
 }

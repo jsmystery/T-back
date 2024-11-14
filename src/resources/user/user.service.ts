@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { PrismaService } from 'src/prisma/prisma.service'
 import { userFullSelect } from './selects/user.select'
 import { UpdateUserInput } from './inputs/update-user.input'
+import { UpdateUserAdminInput } from './inputs/update-user-admin.input'
 import { hash, verify } from 'argon2'  
 
 @Injectable()
@@ -98,5 +99,30 @@ export class UserService {
 		  phone: user.profile?.phone,
 		}));
 	 }
+
 	 
+
+	 async updateUserProfileAdmin(input: UpdateUserAdminInput) {
+		const { userId, ...updateData } = input
+  
+		// Check if user exists
+		const user = await this.prisma.user.findUnique({
+		  where: { id: userId },
+		  include: { profile: true }
+		})
+  
+		if (!user) {
+		  throw new NotFoundException('Пользователь не найден.')
+		}
+  
+		await this.prisma.profile.update({
+		  where: { userId: userId },
+		  data: {
+			 ...updateData
+		  }
+		})
+  
+		return true
+	 }
+
 }
