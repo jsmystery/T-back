@@ -41,4 +41,12 @@ export class UserResolver {
   ) {
     return this.userService.updateUserProfileAdmin(input)
   }
+
+  @Auth(UserRole.ADMIN)
+  @Mutation(() => Boolean, { name: 'deleteUser' })
+  async deleteUser(
+    @Args('id', { type: () => Number }) id: number
+  ) {
+    return this.userService.deleteUser(id)
+  }
 }

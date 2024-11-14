@@ -227,6 +227,7 @@ type Mutation {
   deleteBrand(id: Float!): Boolean!
   deleteProduct(id: Int!): Boolean!
   deleteProductAdmin(brandId: Int!, id: Int!): Boolean!
+  deleteUser(id: Float!): Boolean!
   jwtConfirmation(data: JwtAuthConfirmationInput!): Boolean!
   jwtLogin(data: JwtAuthLoginInput!): SessionUserResponse!
   jwtReset(data: JwtAuthResetInput!): Boolean!

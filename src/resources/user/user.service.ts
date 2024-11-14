@@ -125,4 +125,26 @@ export class UserService {
 		return true
 	 }
 
+
+	 async deleteUser(id: number) {
+		// Check if user exists
+		const user = await this.prisma.user.findUnique({
+		  where: { id },
+		})
+  
+		if (!user) {
+		  throw new NotFoundException('Пользователь не найден.')
+		}
+  
+		// Delete the user and related profile (will cascade if set up in schema)
+		try {
+		  await this.prisma.user.delete({
+			 where: { id },
+		  })
+		  return true
+		} catch (error) {
+		  throw new BadRequestException('Ошибка при удалении пользователя.')
+		}
+	 }
+
 }
